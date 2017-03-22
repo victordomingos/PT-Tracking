@@ -1,0 +1,19 @@
+Mitja Martini e Ian Weisser
+(AutocompleteEntry)
+
+Fredrik Lundh
+(AutoScrollbar)
+
+franksouza183
+(ícone "pasta Python")
+
+Andrey Petrov, 
+a.k.a. shazow@StackOverflow
+
+Bryan Oakley
+Padraic Cunningham
+Pytonista@StackOverflow
+Mixone@StackOverflow
+joec@StackOverflow
+
+

@@ -21,3 +21,7 @@ Foi testada apenas em Mac, no entanto, com pequenas modificações, deverá func
 ## Como usar
 
 Para iniciar a aplicação, basta executar o ficheiro `ctt_tracking/ctt_tracking.py` com o interpretador Python 3.6 ou superior.
+
+## Versão para iPhone e iPad
+
+Na pasta `ctt_tracking_iPhone/` encontra-se uma versão adaptada para iPhone, que corre em ambiente Pythonista 3. Requer alguma configuração prévia, incluindo instalação de dependências. Esta é uma versão bastante simplificada, apresentando apenas as remessas em curso, obtidas a partir de uma mini-base de dados gerada pela aplicação principal de desktop, com uma representação iconográfica dos estados de entrega e de receção de valores de cobrança. Deve por isso ser encarada como uma versao alpha.

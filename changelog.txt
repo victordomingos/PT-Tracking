@@ -1,5 +1,4 @@
 
-
 Histórico de versões:
 ====================
 
@@ -177,3 +176,5 @@ v.0.0 - 22/03/2016
  * validar_obj.py # RegEx do tracking
  * dias_desde_expedicao.py
  * cheques.py # calculo de data para depósito
+ 
+ 

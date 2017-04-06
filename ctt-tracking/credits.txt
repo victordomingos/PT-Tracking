@@ -15,5 +15,3 @@ Padraic Cunningham
 Pytonista@StackOverflow
 Mixone@StackOverflow
 joec@StackOverflow
-
-

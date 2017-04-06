@@ -1,0 +1,179 @@
+
+
+Histórico de versões:
+====================
+
+
+v.2.8 beta - 16/12/2016
+ * Adicionada função de exportação de base de dados simplificada para dispositivos móveis (apenas campos visíveis e remessas ativas)
+ * Ficheiro de base de dados simplificada é comprimido (zip) para reduzir tráfego de dados e tempo de transferência
+
+---
+v.2.7 beta - 20/08/2016
+ * Corrigido um bug que impedia de copiar para a área de transferência quando
+   o nome de algum destinatário continha certos caracteres.
+ * Atualização do código de obtenção de estado detalhado.
+ * Atualização do ficheiro de dependências.
+ 
+---
+v.2.6 beta - 29/07/2016
+ * Corrigido um bug no menu de contexto que poderia originar um ciclo infinito sob determinadas circunstâncias.
+ * Adicionado campo "Expedidor" no formulário de entrada de dados e no painel de detalhes.
+ * Adicionada função "Copiar > Lista de envios por expedidor"
+ 
+---
+v.2.5 beta - 9/07/2016
+ * Atualização online automática com os estados estados atuais das remessas ativas.
+ * A atualização automática só ocorre no horário de expediente.
+ * Lista de envios de hoje ("Copiar") agora é ordenada por destino e valor de cobrança.
+ * Alterações menores nas funções "copiar lista de cheques".
+ 
+---
+v.2.4 beta - 7/07/2016
+ * Adicionado botão-menu "Copiar..."
+ * Adicionado menu de contexto com operações relacionadas com cada remessa individual.
+ * Adicionada janela de créditos/agradecimentos
+ * As pesquisas agora são instantâneas, bastando escrever as primeiras letras.
+ * Ao pesquisar, são removidos os espaços no início e no final, para melhorar os resultados.
+ * Para iniciar uma pesquisa, agora podemos usar CMD+F
+ * Tecla 'Esc' cancela a pesquisa em curso, regressando à vista anteriormente selecionada.
+ * Ao adicionar nova remessa, o cursor é posicionado automaticamente no campo do nº de objeto.
+ * O auto-completamento do destinatário agora começa pelos destinatários mais frequentes.
+ * Corrigido um bug no menu Remessa (funções "Copiar").
+ * Corrigido um bug que fazia aparecer um painel de detalhes vazio.
+ * Corrigida a formatação das casas decimais ao copiar listas de cheques.
+ * Código SQL otimizado para mais fácil leitura.
+ * Eliminados alguns trechos de código não utilizados (otimização de código)
+ * Outras otimizações de código.
+
+---
+v.2.3 beta - 28/06/2016
+ * Ao copiar listas dos cheques depositados, por depositar, etc., é calculado o montante total.
+ * Remessa > Copiar número de objeto (menu e atalho CMD-C)
+ * Remessa > Copiar notificação de expedição para cliente (menu e atalho CMD-E)
+ * Substituição do módulo urllib3 pelo requests (otimização de código)
+ * Código da aplicação foi dividido em vários módulos (otimização de código):
+     - misc_operations.py: operações de base de dados, cálculos, etc.
+     - global_setup.py: variáveis globais (constantes), que requerem configuração ao instalar
+     - extra_tk_classes.py: classes com widgets adicionais para o tkinter
+     - about_window.py: janela "Acerca de..."
+ * Restruturação da estrutura de pastas do projeto
+ * Eliminados alguns trechos de código não utilizados (otimização de código)
+ * Outras otimizações de código
+
+---
+v.2.2 beta - 10/05/2016
+ * Copiar lista de cheques depositados hoje (menu)
+ * Copiar lista de cheques por depositar (menu)
+ * Copiar lista de cheques ainda não recebidos (menu)
+ * Copiar lista de todos os cheques já depositados (menu)
+
+---
+v.2.1 beta - 03/05/2016
+ * Vista "Detalhes" (duplo-clique na tabela, para abrir detalhes de remessa)
+ * Correção de erros (text-wrap)
+ * Destaque a vermelho para objeto com entrega não conseguida.
+ * Tecla 'Esc' fecha o painel de detalhes de remessa e o formulário de registo de nova remessa.
+ * Menu da aplicação
+ * Atalhos de teclado
+ * Animação de entrada e saída nos paineis de detalhes e registo de remessa
+ * Botão "Copiar" apresenta agora um pequeno painel de feedback.
+ * Pequenos detalhes estéticos.
+ * Janela "Acerca" com estatísticas de utilização.
+
+---
+v.2.0 beta 1 - 25/04/2016
+ * Corrigido o mecanismo de seleção de linhas na tabela principal (funciona com rato e teclado)
+ * Os botões de registo de receção de cheque e de depósito de cheque foram combinados num único botão que se atualiza dinamicamente de acordo com a remessa selecionada.
+ * O botão "Arquivar" muda automaticamente para "Restaurar" quando a remessa já se encontra arquivada.
+ * Redução nas chamadas ao servidor dos CTT, para melhorar desempenho.
+ * Campo "Destinatário" agora completa automaticamente com os destinatários introduzidos anteriormente.
+ * AppleScript c/ ícone personalizado para executar aplicação (requer personalização)
+
+---
+v.1.9.2 - 22/04/2016 - Comemorando um mês desde a versão v.0.0 :-)
+ * Cores! Destaque visual para remessas não entregues, com cobrança atrasada e cheques a depositar já.
+ * Arquivar remessa ativa.
+ * Restaurar (reativar) remessa arquivada.
+ * Formulário de introdução de dados fecha automaticamente ao clicar na tabela ou ativar uma das vistas principais.
+ * Botões para registar receção e depósito de cheque já funcionam.
+ * Botão para copiar lista de remessas do dia para a Área de transferência já funciona.
+
+---
+v.1.9.1 - 21/04/2016
+ * Coluna "Volumes"
+ * Ocultar datas de receção e depósito para objetos sem cobrança.
+ * Vista "Cobrança"
+ * Vista "Entregues"
+ * Vista "Arquivo"
+ * O registo de novas remessas já inclui a respetiva data.
+ * Estabelecido tamanho máximo da janela com ajuste do tamanho das colunas, para maior legibilidade.
+ * A tabela apenas permite selecionar uma linha de cada vez, para evitar alterações acidentais.
+ * Pesquisa já funciona (inclui campos: destinatário, nº de objeto, data de expedição, expedidor, RMA, observações e valor de cobrança).
+
+---
+v.1.9.0 - 20/04/2016
+ * Status update: pre-alpha
+ * Nova interface gráfica inteiramente baseada em TK/TCL (tkinter)
+ * Vista “Em curso” completa (a corrigir cores intercaladas das linhas na treeview)
+ * Formulário de entrada de dados já funciona (falta adicionar data de expedição)
+ * Obtenção de estado atual e histórico de remessa (CTT) operacional (1 vez por hora)
+ * Apagar/Arquivar remessa - função de base de dados já disponível, falta obter remessa selecionada
+ * Para manter a integridade da base de dados, a aplicação não aceita a introdução de um registo com nº de objeto previamente existente.
+
+---
+v.0.8 - 6/04/2016 - 15 dias desde as primeiras linhas de código!
+ * Status update: Beta
+ * Limpeza de código
+ * Cessando desenvolvimento (iniciando desenvolvimento de nova versão com nova arquitetura)
+
+---
+v.0.7 - 6/04/2016
+ * Script bash para instalação dos módulos externos requeridos (Mac)
+ * Reduzir chamadas ao site CTT (se objeto foi entregue, não verificar sempre)
+ * Melhoramentos à verificação de estado (se campo estiver vazio, obter o último estado a partir da lista detalhada)
+ * Vista detalhada do histórico de tracking para uma dada remessa
+ * ✓ ou ⚠ para indicações mais visuais na lista de estados.
+ * Error handling durante a verificação de estado (caso falhe a consulta na web)
+
+---
+v.0.6 - 31/03/2016
+ * Obtenção do estado mais recente da remessa a partir da CTT Expresso
+ * Visualização de detalhes de remessa (alpha)
+ * Vista de "Hoje": Copiar para a Área de Transferência a lista dos envios de hoje (p/ usar em email)
+ * Correção de erros
+
+---
+v.0.5 - 29/03/2016
+ * Alterações ao menu inicial (diferentes tipos de vista, com filtragem de registos "hoje" e "cobrança")
+ * Adicionados alguns campos à tabela principal
+ * Número de objeto agora é convertido para maiúsculas.
+ * Registar data de receção de cheque de envio à cobrança
+ * Eliminar remessa (nota: será para converter em remessa arquivada, numa versão futura)
+
+---
+v.0.4 - 27/03/2016
+ * guardar e ler em ficheiro CSV
+ * calcular cheques a depositar e valores por cobrar
+ * os índices dos registos são agora sequenciais e atualizados sempre que há alterações na lista
+ * remessas com envio a PP têm data automatica de cheque p/ +3dias
+ * verificação adicional de valores introduzidos, incluindo casas decimais
+
+---
+v.0.3 - 25/03/2016
+ * esquema inicial de menu
+ * rotina para adicionar remessa
+
+---
+v.0.2 - 23/03/2016
+ * teste_tabela**.py # desenhar tabela com remessas para menu principal
+
+---
+v.0.1 - 23/03/2016
+ * system_info.py # obter descrição do sistema operativo e ambiente python
+
+---
+v.0.0 - 22/03/2016
+ * validar_obj.py # RegEx do tracking
+ * dias_desde_expedicao.py
+ * cheques.py # calculo de data para depósito

@@ -14,3 +14,8 @@ Requer adicionalmente os seguintes módulos externos:
   - html5lib 0.999999
   
 Foi testada apenas em Mac, no entanto, com pequenas modificações, deverá funcionar sem problemas em Windows ou Linux. Em sistemas operativos antigos, alguns ícones Unicode poderão não aparecer corretamente. Em ambiente Mac, é altamente recomendável usar o ActiveTCL 8.5.18, conforme as notas de lançamento da linguagem Python, de modo a assegurar a compatibilidade e estabilidade do tkinter no OS X.
+
+
+## Como usar
+
+Para iniciar a aplicação, basta executar o ficheiro `ctt_tracking/ctt_tracking.py` com o interpretador Python 3.6 ou superior.

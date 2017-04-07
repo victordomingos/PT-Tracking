@@ -25,6 +25,6 @@ Para iniciar a aplicação, basta executar o ficheiro `ctt_tracking/ctt_tracking
 ## Versão para iPhone e iPad
 
 Na pasta `ctt_tracking_iPhone/` encontra-se uma versão adaptada para iPhone, que corre em ambiente Pythonista 3. Requer alguma configuração prévia, incluindo instalação de dependências. Esta é uma versão bastante simplificada, apresentando apenas as remessas em curso, obtidas a partir de uma mini-base de dados gerada pela aplicação principal de desktop, com uma representação iconográfica dos estados de entrega e de receção de valores de cobrança. Deve por isso ser encarada como uma versao alpha.
-<center>
-<img src="http://i.imgur.com/T7tGgSB.jpg" width="320">
-</center>
+<p align="center">
+<img border="1" src="http://i.imgur.com/T7tGgSB.jpg" width="320">
+</p>

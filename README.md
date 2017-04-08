@@ -14,7 +14,11 @@ Requer adicionalmente os seguintes módulos externos:
   - requests 2.9.1
   - terminaltables 2.1.0
   - html5lib 0.999999
-  
+
+Para instalar facilmente estas dependências, pode ser utilizado o seguinte comando:
+
+`pip3.6 install -r requirements.txt`
+
 Foi testada apenas em Mac, no entanto, com pequenas modificações, deverá funcionar sem problemas em Windows ou Linux. Em sistemas operativos antigos, alguns ícones Unicode poderão não aparecer corretamente. Em ambiente Mac, é altamente recomendável usar o ActiveTCL 8.5.18, conforme as notas de lançamento da linguagem Python, de modo a assegurar a compatibilidade e estabilidade do tkinter no OS X.
 
 

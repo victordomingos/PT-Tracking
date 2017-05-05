@@ -249,7 +249,7 @@ class Janela:
         self.text_input_rma.grid(column=5, row=4, sticky=W+E)
 
 
-        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", command=lambda: self.add_remessa)
+        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default='active', command=lambda: self.add_remessa)
         self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
         self.btn_adicionar.bind("<Return>", self.add_remessa)
         self.btn_adicionar.bind('<Button-1>', self.add_remessa)

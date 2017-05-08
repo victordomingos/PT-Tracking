@@ -78,6 +78,11 @@ class Janela:
         self.obj_num = ""
         self.updates = 0  # Para controlo de função recorrente (self.atualizacao_periodica)
 
+        style_label = ttk.Style()
+        style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
+        style_label.configure("Active.TButton", foreground="white")
+
+        
         # Cabeçalho da aplicação  -------------------------------------------------------------------------------------
         #self.headframe = ttk.Frame(root, padding="3 8 3 3")
         """
@@ -249,7 +254,7 @@ class Janela:
         self.text_input_rma.grid(column=5, row=4, sticky=W+E)
 
 
-        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", command=lambda: self.add_remessa)
+        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default="active", style="Active.TButton", command=lambda: self.add_remessa)
         self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
         self.btn_adicionar.bind("<Return>", self.add_remessa)
         self.btn_adicionar.bind('<Button-1>', self.add_remessa)

@@ -1,11 +1,18 @@
 
+
 Histórico de versões:
 ====================
 
 
-v.2.8 beta - 16/12/2016
- * Adicionada função de exportação de base de dados simplificada para dispositivos móveis (apenas campos visíveis e remessas ativas)
- * Ficheiro de base de dados simplificada é comprimido (zip) para reduzir tráfego de dados e tempo de transferência
+v.2.8 beta - ?
+ * Adicionada função de exportação de base de dados simplificada para
+   dispositivos móveis (apenas campos visíveis e remessas ativas).
+ * Ficheiro de base de dados simplificada é comprimido (zip) para reduzir
+   tráfego de dados e tempo de transferência.
+ * O botão "Adicionar" no painel de introdução de dados é agora destacado como 
+   ativo, seguindo a recomendação das macOS Human Interface Guidelines.
+ * 
+ * 
 
 ---
 v.2.7 beta - 20/08/2016
@@ -16,15 +23,19 @@ v.2.7 beta - 20/08/2016
  
 ---
 v.2.6 beta - 29/07/2016
- * Corrigido um bug no menu de contexto que poderia originar um ciclo infinito sob determinadas circunstâncias.
- * Adicionado campo "Expedidor" no formulário de entrada de dados e no painel de detalhes.
+ * Corrigido um bug no menu de contexto que poderia originar um ciclo infinito
+   sob determinadas circunstâncias.
+ * Adicionado campo "Expedidor" no formulário de entrada de dados e no painel
+   de detalhes.
  * Adicionada função "Copiar > Lista de envios por expedidor"
  
 ---
 v.2.5 beta - 9/07/2016
- * Atualização online automática com os estados estados atuais das remessas ativas.
+ * Atualização online automática com os estados estados atuais das remessas
+   ativas.
  * A atualização automática só ocorre no horário de expediente.
- * Lista de envios de hoje ("Copiar") agora é ordenada por destino e valor de cobrança.
+ * Lista de envios de hoje ("Copiar") agora é ordenada por destino e valor de
+   cobrança.
  * Alterações menores nas funções "copiar lista de cheques".
  
 ---
@@ -176,5 +187,3 @@ v.0.0 - 22/03/2016
  * validar_obj.py # RegEx do tracking
  * dias_desde_expedicao.py
  * cheques.py # calculo de data para depósito
- 
- 

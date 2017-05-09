@@ -11,7 +11,8 @@ v.2.8 beta - ?
    tráfego de dados e tempo de transferência.
  * O botão "Adicionar" no painel de introdução de dados é agora destacado como 
    ativo, seguindo a recomendação das macOS Human Interface Guidelines.
- * 
+ * A atualização da base de dados no arranque da aplicação agora é feita após
+   a abertura da janela, para permitir visualizar mais rapidamente a lista.
  * 
 
 ---

@@ -290,9 +290,8 @@ class Janela:
         self.topframe.pack(side=TOP, fill=X)
         self.mainframe.pack(side=TOP, fill=BOTH)
         self.statusframe.pack(side=BOTTOM, before=self.mainframe, fill=X)
+        self.mainframe.after(1000, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
         self.ativar_emcurso()
-        self.mainframe.after(update_delay, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
-
 
     def expedir_select(self, event):
         self.combo_expedidor.selection_clear()
@@ -579,8 +578,11 @@ class Janela:
         self.hide_entryform()
         self.hide_detalhe()
         self.text_input_pesquisa.delete(0, END)
-        db_atualizar_tudo()
-        criar_mini_db()
+
+        if self.updates:
+            db_atualizar_tudo()
+            criar_mini_db()
+            self.updates += 1
 
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()

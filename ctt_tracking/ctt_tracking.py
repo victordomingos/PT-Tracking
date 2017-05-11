@@ -25,6 +25,7 @@ import sqlite3
 import tkinter.font
 import os
 import sys
+import io
 import webbrowser
 import shlex
 from datetime import time, datetime, timedelta
@@ -1835,6 +1836,8 @@ class Janela:
 
 
 if __name__ == "__main__":
+    sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
     print("\nBem-vindo(a) ao {} ({})!\n".format(__app_name__, __version__))
     print(__copyright__)
     print(__license__)

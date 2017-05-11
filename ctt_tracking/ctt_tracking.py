@@ -78,6 +78,11 @@ class Janela:
         self.obj_num = ""
         self.updates = 0  # Para controlo de função recorrente (self.atualizacao_periodica)
 
+        style_label = ttk.Style()
+        style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
+        style_label.configure("Active.TButton", foreground="white")
+
+        
         # Cabeçalho da aplicação  -------------------------------------------------------------------------------------
         #self.headframe = ttk.Frame(root, padding="3 8 3 3")
         """
@@ -249,7 +254,7 @@ class Janela:
         self.text_input_rma.grid(column=5, row=4, sticky=W+E)
 
 
-        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default='active', command=lambda: self.add_remessa)
+        self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default="active", style="Active.TButton", command=lambda: self.add_remessa)
         self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
         self.btn_adicionar.bind("<Return>", self.add_remessa)
         self.btn_adicionar.bind('<Button-1>', self.add_remessa)
@@ -285,9 +290,8 @@ class Janela:
         self.topframe.pack(side=TOP, fill=X)
         self.mainframe.pack(side=TOP, fill=BOTH)
         self.statusframe.pack(side=BOTTOM, before=self.mainframe, fill=X)
+        self.mainframe.after(1000, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
         self.ativar_emcurso()
-        self.mainframe.after(update_delay, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
-
 
     def expedir_select(self, event):
         self.combo_expedidor.selection_clear()
@@ -574,8 +578,11 @@ class Janela:
         self.hide_entryform()
         self.hide_detalhe()
         self.text_input_pesquisa.delete(0, END)
-        db_atualizar_tudo()
-        criar_mini_db()
+
+        if self.updates:
+            db_atualizar_tudo()
+            criar_mini_db()
+            self.updates += 1
 
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()

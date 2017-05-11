@@ -289,7 +289,7 @@ def verificar_estado(tracking_code):
     ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
     estado = "- N/A -"
     try:
-        html = requests.get(ctt_url).content
+        html = requests.get(ctt_url, timeout=(5,30)).content
         soup = BeautifulSoup(html, "html.parser")
         table = soup.find('table')
         cells = table('td')
@@ -311,7 +311,7 @@ def obter_estado_detalhado(remessa):
     ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
     estado = "- N/A -"
     try:
-        html = requests.get(ctt_url).content
+        html = requests.get(ctt_url, timeout=(5,30)).content
         soup = BeautifulSoup(html, "html5lib")
         rows = soup.select("table #details_0 td table")[0]
         #print("rows: ", rows)

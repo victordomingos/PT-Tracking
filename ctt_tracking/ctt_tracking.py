@@ -48,9 +48,9 @@ from about_window import *
 
 __app_name__ = "PT Tracking 2017"
 __author__ = "Victor Domingos"
-__copyright__ = "Copyright 2017 Victor Domingos"
+__copyright__ = "Copyright 2016 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
-__version__ = "v.2.8"
+__version__ = "v.2.9"
 __email__ = "web@victordomingos.com"
 __status__ = "beta"
 
@@ -66,7 +66,7 @@ class Janela:
         global update_delay
         self.master = master
         self.master.createcommand('exit', save_and_exit)
-        master.title(__app_name__+ " - "+ __version__ + " ("+ EMPRESA + ")")
+        master.title(__app_name__+ " - "+ __version__)
         master.minsize(width=800, height=600)
         master.maxsize(width=1024, height=2000)
         self.janela_thanks = None
@@ -78,11 +78,12 @@ class Janela:
         self.obj_num = ""
         self.updates = 0  # Para controlo de função recorrente (self.atualizacao_periodica)
 
+
         style_label = ttk.Style()
         style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
         style_label.configure("Active.TButton", foreground="white")
 
-        
+
         # Cabeçalho da aplicação  -------------------------------------------------------------------------------------
         #self.headframe = ttk.Frame(root, padding="3 8 3 3")
         """
@@ -132,7 +133,7 @@ class Janela:
 
         self.menu_btn.menu.add_command(label="Número de objeto", command=self.copiar_obj_num, accelerator="Command+c")
         self.menu_btn.menu.add_command(label="Mensagem de expedição", command=self.copiar_msg, accelerator="Command+e")
-        # self.menu_btn.menu.add_command(label="Lista de remessas de hoje", command=self.copiar_hoje, accelerator="Command+t")                
+        # self.menu_btn.menu.add_command(label="Lista de remessas de hoje", command=self.copiar_hoje, accelerator="Command+t")
         self.menu_btn.menu.add_separator()
         self.menu_btn.menu.add_command(label="Cheques depositados hoje", command=self.copiar_chq_hoje)
         self.menu_btn.menu.add_command(label="Cheques por depositar", command=self.copiar_chq_por_depositar)
@@ -204,8 +205,6 @@ class Janela:
         # Formulário de introdução de dados (aparece somente quando o utilizador solicita) ----------------------------
         self.bottomframe = ttk.Frame(root, padding="4 8 4 10")
 
-        style_label = ttk.Style()
-        style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
         self.adl_remessa = ttk.Label(self.bottomframe, style="BW.TLabel", text="Adicionar Remessa:\n")
         self.adl_remessa.grid(column=0, row=0, columnspan=7, sticky=W)
 
@@ -298,8 +297,8 @@ class Janela:
 
 
     def atualizacao_periodica(self):
-        """ Atualiza automaticamente de forma periódica a informação com o 
-                estado atual das remessas ativas. Caso a interface não esteja 
+        """ Atualiza automaticamente de forma periódica a informação com o
+                estado atual das remessas ativas. Caso a interface não esteja
                 em utilização, é atualizada também a informação no ecrã.
                 A atualização só é efetuada no horário de expediente, com o
                 objetivo de reduzir o número consultas ao servidor.
@@ -308,25 +307,25 @@ class Janela:
         global detalhe_visible
         global entryform_visible
         global pesquisa_visible
-        
+
         agora = datetime.now()
         agora_hora = agora.time()
-        if time(9,30) <= agora_hora <= time(20,00):             
+        if time(9,30) <= agora_hora <= time(20,00):
                 self.updates +=1
-                
+
                 print("atualizacao_periodica() em curso... ", datetime.now().time(), "-", self.updates)
                 s_status = "A obter estados atualizados para as remessas em curso."
                 self.status_txt.set(s_status)
                 db_atualizar_tudo()
                 criar_mini_db()
-                
+
                 s_status = "Atualização completa!"
                 self.status_txt.set(s_status)
-                
+
                 # apenas atualizar a tabela com os novos dados, caso não esteja em curso uma operação do utilizador:
-                if (detalhe_visible == 0) and (entryform_visible == 0) and (pesquisa_visible == 0):
+                if (not detalhe_visible) and (not entryform_visible) and (not pesquisa_visible):
                         self.regressar_tabela()
-                        
+
                 # Agendar nova atualização apenas até ser atingido o seguinte limite:
                 if self.updates <= 900:
                         self.mainframe.after(update_delay, self.atualizacao_periodica)
@@ -384,17 +383,17 @@ class Janela:
 
 
     def thanks(self,*event):
-        self.janela_thanks = thanks_window() 
+        self.janela_thanks = thanks_window()
 
     def about(self,*event):
         self.janela_about = about_window()
-            
+
     """
     def fechar_janela_ativa(self):
         root.protocol("WM_DELETE_WINDOW", save_and_exit)
         pass
     """
-    
+
 
     def gerar_menu(self):
         # Menu da janela principal
@@ -455,8 +454,8 @@ class Janela:
         self.menu.add_cascade(menu=self.windowmenu, label='Janela')
         self.windowmenu.add_separator()
         #self.windowmenu.add_command(label="Fechar", command=self.fechar_janela_ativa, accelerator="Command-w") ###fechar janela ativa cmd-w
-        
-        
+
+
         self.helpmenu = Menu(self.menu)
         self.menu.add_cascade(label="Help", menu=self.helpmenu)
  #       helpmenu.add_command(label="Preferências", command=About)
@@ -474,8 +473,8 @@ class Janela:
         #root.bind('<<about-idle>>', about_dialog)
         #root.bind('<<open-config-dialog>>', config_dialog)
         root.createcommand('tkAboutDialog', about_window)
-        
-        
+
+
         #----------------Menu contextual tabela principal---------------------
         self.contextMenu = Menu(self.menu)
         self.contextMenu.add_command(label="Informações", command=self.mostrar_detalhe)
@@ -560,8 +559,8 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT * 
-                     FROM remessas 
+        c.execute('''SELECT *
+                     FROM remessas
                      WHERE (obj_num = ?);''', (tree_obj_num,))
         detalhes = c.fetchone()
         conn.commit()
@@ -586,8 +585,8 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
-        c.execute ("""SELECT * 
-                      FROM remessas 
+        c.execute ("""SELECT *
+                      FROM remessas
                       WHERE (arquivado = 0);""")
         for i in self.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
             self.tree.delete(i)
@@ -663,8 +662,8 @@ class Janela:
         self.text_input_pesquisa.delete(0, END)
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
-        c.execute ("""SELECT * 
-                      FROM remessas 
+        c.execute ("""SELECT *
+                      FROM remessas
                       WHERE (valor_cobr > 0) AND (arquivado = 0);""")
         for i in self.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
             self.tree.delete(i)
@@ -681,7 +680,7 @@ class Janela:
         for row in c:  # Preencher cada linha da tabela com os valores obtidos da base de dados
             data_exp = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S.%f")
             dias = calcular_dias_desde_envio(data_exp)
-     
+
             tag_cor = impar
             if row[2] == "Objeto com tentativa de entrega":
                 tag_cor = "falhou_entrega"
@@ -789,11 +788,11 @@ class Janela:
         self.hide_detalhe()
         self.liga_restaurar()
         self.text_input_pesquisa.delete(0, END)
-        
+
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
-        c.execute ("""SELECT * 
-                      FROM remessas 
+        c.execute ("""SELECT *
+                      FROM remessas
                       WHERE (arquivado = 1)
                       ORDER BY data_exp DESC;""")
         for i in self.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
@@ -848,8 +847,8 @@ class Janela:
         global pesquisa_visible
         pesquisa_visible = 0
         self.tree.focus_set()
-        self.regressar_tabela()      
-            
+        self.regressar_tabela()
+
 
     def ativar_pesquisa(self, event):
         global pesquisa_visible
@@ -858,22 +857,22 @@ class Janela:
         self.liga_arquivar()
         self.hide_entryform()
         self.hide_detalhe()
-        
+
         termo_pesquisa = self.text_input_pesquisa.get()
         termo_pesquisa = termo_pesquisa.strip()
 
         # regressar ao campo de pesquisa caso não haja texto a pesquisar (resolve questão do atalho de teclado)
         if termo_pesquisa == "":
             return
-                
+
         self.status_txt.set("A pesquisar: {}".format(termo_pesquisa))
-        
+
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
         termo = "%" + termo_pesquisa + "%"
-        c.execute ("""SELECT * 
-                      FROM remessas 
-                      WHERE (destin LIKE ?) OR (obj_num LIKE ?) OR (rma LIKE ?) OR (obs LIKE ?) OR (expedidor LIKE ?) OR (data_exp LIKE ?) OR (valor_cobr LIKE ?) 
+        c.execute ("""SELECT *
+                      FROM remessas
+                      WHERE (destin LIKE ?) OR (obj_num LIKE ?) OR (rma LIKE ?) OR (obs LIKE ?) OR (expedidor LIKE ?) OR (data_exp LIKE ?) OR (valor_cobr LIKE ?)
                       ORDER BY data_exp DESC;""",
                       (termo, termo, termo, termo, termo, termo, termo))
         for i in self.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
@@ -1002,12 +1001,12 @@ class Janela:
                     return
         data_dep = calcular_data_deposito(agora, num_dias)
         # reunir variáveis que faltam #TODO
-        
+
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         try:
-            c.execute("""INSERT INTO remessas 
+            c.execute("""INSERT INTO remessas
                          VALUES ((SELECT max(id) FROM remessas)+1,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);""", (
                                 add_destin,
                                 "- Informação não disponível -",
@@ -1049,7 +1048,7 @@ class Janela:
         """
         global DB_PATH
         self.atualizar_remessa_selecionada()
-        
+
         if self.remessa_selecionada == "":
             messagebox.showwarning("", "Nenhuma remessa selecionada.")
             root.focus_force()
@@ -1113,9 +1112,9 @@ class Janela:
             try:
                 conn = sqlite3.connect(DB_PATH)
                 c = conn.cursor()
-                c.execute("""UPDATE remessas 
-                             SET data_depositado = ?, data_ult_alt = ?, arquivado = ? 
-                             WHERE (valor_cobr > 0) AND (chq_recebido != ?) AND (obj_num = ?);""", 
+                c.execute("""UPDATE remessas
+                             SET data_depositado = ?, data_ult_alt = ?, arquivado = ?
+                             WHERE (valor_cobr > 0) AND (chq_recebido != ?) AND (obj_num = ?);""",
                              (agora, agora, 1, "N/D", remessa))
                 conn.commit()
                 c.close()
@@ -1145,8 +1144,8 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT obj_num, destin, vols, valor_cobr 
-                     FROM remessas 
+        c.execute('''SELECT obj_num, destin, vols, valor_cobr
+                     FROM remessas
                      WHERE data_exp >= datetime("now", "-12 hours")
                      ORDER BY destin ASC, valor_cobr ASC;''')
         remessas = c.fetchall()
@@ -1211,8 +1210,8 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT obj_num, destin, valor_cobr 
-                     FROM remessas 
+        c.execute('''SELECT obj_num, destin, valor_cobr
+                     FROM remessas
                      WHERE data_depositado >= datetime("now", "-12 hours")
                      ORDER BY destin ASC, valor_cobr DESC;''')
         remessas = c.fetchall()
@@ -1230,7 +1229,7 @@ class Janela:
             texto = destino + " - " + cobr + " (" + objeto + ")\n"
             texto_completo = texto_completo + texto
         texto_completo += "\nTotal depositado: {:,.2f} euros.\n".format(float(montante_total)).replace(',', ' ')
-        
+
         os.system("echo %s | pbcopy" % shlex.quote(texto_completo))
         self.remessa_selecionada = ""
         self.regressar_tabela()
@@ -1248,9 +1247,9 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositar 
-                     FROM remessas 
-                     WHERE (valor_cobr > 0) AND (data_depositado = 0) AND (chq_recebido != "N/D") 
+        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositar
+                     FROM remessas
+                     WHERE (valor_cobr > 0) AND (data_depositado = 0) AND (chq_recebido != "N/D")
                      ORDER BY data_depositar ASC, destin ASC;''')
         remessas = c.fetchall()
         c.close()
@@ -1292,9 +1291,9 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositar 
-                     FROM remessas 
-                     WHERE (arquivado = 0) AND (valor_cobr > 0) AND (chq_recebido = "N/D") 
+        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositar
+                     FROM remessas
+                     WHERE (arquivado = 0) AND (valor_cobr > 0) AND (chq_recebido = "N/D")
                      ORDER BY destin ASC, data_depositar ASC;''')
         remessas = c.fetchall()
         c.close()
@@ -1339,17 +1338,17 @@ class Janela:
             conn = sqlite3.connect(DB_PATH)
             texto_completo_expedidor = "\n\n\n" + 17*"=" + "[ Envios referentes ao expedidor: " + expedidor + " ]"+ 17*"=" + "\n\n"
             c = conn.cursor()
-            c.execute('''SELECT data_exp, obj_num, destin, vols, valor_cobr  
-                         FROM remessas 
-                         WHERE expedidor = ? 
-                         ORDER BY data_exp ASC, destin ASC;''', 
+            c.execute('''SELECT data_exp, obj_num, destin, vols, valor_cobr
+                         FROM remessas
+                         WHERE expedidor = ?
+                         ORDER BY data_exp ASC, destin ASC;''',
                          (expedidor,)
                                 )
             remessas = c.fetchall()
             c.close()
-            
+
             num_remessas = len(remessas)
-            total_vols, remessas_com_cobr, total_remessas_multiplos, total_vols_multiplos, total_simples = 0, 0, 0, 0, 0 
+            total_vols, remessas_com_cobr, total_remessas_multiplos, total_vols_multiplos, total_simples = 0, 0, 0, 0, 0
             ano, mes = 0, 0
             str_data, str_ano, str_mes, resumo_mes = "", "", "", ""
             ano_diferente, mes_diferente = True, True
@@ -1359,24 +1358,24 @@ class Janela:
             for linha in remessas:
                 remessas_mes +=1
                 prefixos = ""
-                dt_data_expedido = datetime.strptime(linha[0], "%Y-%m-%d %H:%M:%S.%f")                                                  
+                dt_data_expedido = datetime.strptime(linha[0], "%Y-%m-%d %H:%M:%S.%f")
                 data_expedido = datetime.strftime(dt_data_expedido,"%Y-%m-%d")
                 destino = linha[2]
                 objeto = linha[1]
                 cobr = float(linha[4])
                 vols = linha[3]
                 total_vols += vols
-                
+
                 ano_i = dt_data_expedido.year
                 mes_i = dt_data_expedido.month
-                
+
                 if ano_i != ano:
                     ano_diferente = True
                     str_ano = str(ano_i)
                     ano = ano_i
                 else:
                     ano_diferente = False
-                    
+
                 if mes_i != mes:
                     str_mes = str(mes_i)
                     mes = mes_i
@@ -1386,19 +1385,19 @@ class Janela:
 
 
                 if ano_diferente or mes_diferente: # Caso mude mês ou ano
-                    if (linha_atual!=0) :  # Se é a última remessa do mês, mostra o resumo mensal.                              
+                    if (linha_atual!=0) :  # Se é a última remessa do mês, mostra o resumo mensal.
                         resumo_mes = "    -   -   -\n    Resumo do mês (" + expedidor + "):"
                         txt_mes_remessas = "\n\n    Remessas: " + str(remessas_mes)
                         txt_mes_num_vols     = " (" + str(vols_mes) + " volumes)"
                         txt_mes_simples      = "\n       - Remessas tipo Simples: " + str(remessas_simples_mes)
                         txt_mes_multiplos    = "\n       - Remessas tipo Múltiplo: " + str(remessas_mult_mes) + " (" + str(vols_mult_mes) + " volumes)"
                         txt_mes_num_cobr     = "\n    Envios com cobrança: " + str(remessas_cobr_mes)
-                        resumo_mes = resumo_mes + txt_mes_remessas + txt_mes_num_vols + txt_mes_simples + txt_mes_multiplos + txt_mes_num_cobr + "\n\n"    
+                        resumo_mes = resumo_mes + txt_mes_remessas + txt_mes_num_vols + txt_mes_simples + txt_mes_multiplos + txt_mes_num_cobr + "\n\n"
                         texto_completo_expedidor += resumo_mes
-                        
+
                     else:
                         print("nem é a primeira remessa do mês, nem chegou o fim do mês!", linha_atual, linha_atual_expedidor, num_remessas)
-                    
+
                     linha_atual = 0
                     if (linha_atual_expedidor != num_remessas-1):  # Se é a primeira remessa do mês, mostra a data.
                         str_data = "\n\n  " + str_ano + "-" + str_mes + "\n" + 60*"-"+ "\n"
@@ -1406,19 +1405,19 @@ class Janela:
                         print("adicionada data para:", str_ano, str_mes)
                         print("linha_atual:", linha_atual)
                         remessas_mes, vols_mes, remessas_cobr_mes, remessas_mult_mes, remessas_simples_mes, vols_mult_mes = 0, 0, 0, 0, 0, 0
-                   
 
-                    
-                # Aqui começa a listar todas as remessas do mês...    
+
+
+                # Aqui começa a listar todas as remessas do mês...
                 if cobr > 0.0:
                     remessas_com_cobr += 1
                     remessas_cobr_mes += 1
                     prefixos += "C "
                 else:
                     prefixos += "  "
-                    
+
                 vols_mes += vols
-                
+
                 if vols > 1:
                     total_remessas_multiplos +=1
                     total_vols_multiplos += vols
@@ -1429,16 +1428,16 @@ class Janela:
                     total_simples += 1
                     remessas_simples_mes += 1
                     prefixos += "  "
-                    
-                     
+
+
                 txt_cobr = str(cobr) + " €"
                 texto_linha = prefixos + data_expedido + " - " + objeto + " - " + destino + " (" + str(vols) + "vols., cobrança: " + txt_cobr + ")\n"
                 texto_completo_expedidor += texto_linha
-        
-                linha_atual += 1    
+
+                linha_atual += 1
                 linha_atual_expedidor += 1
-                               
-            remessas_mes +=1                
+
+            remessas_mes +=1
             #mostra resumo do mês para o último mês
             resumo_mes = "    -   -   -\n    Resumo do mês (" + expedidor + "):"
             txt_mes_remessas = "\n\n    Remessas: " + str(remessas_mes)
@@ -1446,7 +1445,7 @@ class Janela:
             txt_mes_simples      = "\n       - Remessas tipo Simples: " + str(remessas_simples_mes)
             txt_mes_multiplos    = "\n       - Remessas tipo Múltiplo: " + str(remessas_mult_mes) + " (" + str(vols_mult_mes) + " volumes)"
             txt_mes_num_cobr     = "\n    Envios com cobrança: " + str(remessas_cobr_mes)
-            resumo_mes = resumo_mes + txt_mes_remessas + txt_mes_num_vols + txt_mes_simples + txt_mes_multiplos + txt_mes_num_cobr + "\n\n"    
+            resumo_mes = resumo_mes + txt_mes_remessas + txt_mes_num_vols + txt_mes_simples + txt_mes_multiplos + txt_mes_num_cobr + "\n\n"
             texto_completo_expedidor += resumo_mes
 
             # No final, apresenta um resumo global para o expedidor atual...
@@ -1456,11 +1455,11 @@ class Janela:
             txt_multiplos    = "\n   - Remessas tipo Múltiplo: " + str(total_remessas_multiplos) + " (" + str(total_vols_multiplos) + " volumes)"
             txt_num_cobr     = "\nEnvios com cobrança: " + str(remessas_com_cobr)
 
-            
+
             texto_completo_expedidor += "\n\n------------------"
             texto_completo_expedidor += txt_num_remessas + txt_num_vols + txt_simples + txt_multiplos + txt_num_cobr + "\n\n\n\n"
             texto_completo += texto_completo_expedidor
-            
+
 
 
         texto_completo += "\n"
@@ -1481,9 +1480,9 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositado 
-                     FROM remessas 
-                     WHERE (valor_cobr > 0) AND (chq_recebido != "N/D") AND (data_depositado != 0) 
+        c.execute('''SELECT obj_num, destin, valor_cobr, data_depositado
+                     FROM remessas
+                     WHERE (valor_cobr > 0) AND (chq_recebido != "N/D") AND (data_depositado != 0)
                      ORDER BY data_depositado DESC, destin ASC;''')
         remessas = c.fetchall()
         c.close()
@@ -1509,7 +1508,6 @@ class Janela:
         self.status_txt.set("Lista de cheques já depositados copiada para a Área de Transferência!")
 
 
-
     def del_remessa(self):
         global estado_tabela
         self.status_txt.set("Nenhuma remessa selecionada!")
@@ -1517,10 +1515,17 @@ class Janela:
         if estado_tabela == "Arquivo":
             db_restaurar_remessa(remessa)
             self.status_txt.set("Todas as remessas nesta vista já se encontram arquivadas! A remessa {} foi restaurada.".format(remessa))
+        if pesquisa_visible:
+            if self.arquivado:
+                db_restaurar_remessa(remessa)
+                self.status_txt.set("A restaurar a remessa {}.".format(remessa))
+            else:
+                db_del_remessa(remessa)
+                self.status_txt.set("A arquivar remessa {}".format(remessa))
         else:
             db_del_remessa(remessa)
-            criar_mini_db()
             self.status_txt.set("A arquivar remessa {}".format(remessa))
+        criar_mini_db()
         self.remessa_selecionada = ""
         self.regressar_tabela()
 
@@ -1554,19 +1559,19 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT arquivado, valor_cobr, chq_recebido 
-                     FROM remessas 
+        c.execute('''SELECT arquivado, valor_cobr, chq_recebido
+                     FROM remessas
                      WHERE (obj_num = ?);''',
                      (tree_obj_num,))
         estado = c.fetchone()
         conn.commit()
         c.close()
 
-        arquivado = estado[0]
+        self.arquivado = estado[0]
         valor_cobr = estado[1]
         chq_recebido = estado[2]
 
-        if arquivado == 1:
+        if self.arquivado:
             self.liga_restaurar()
         else:
             self.liga_arquivar()
@@ -1604,8 +1609,8 @@ class Janela:
 
     def show_entryform(self, *event):
         global entryform_visible
-        
-        if entryform_visible == 1:
+
+        if entryform_visible:
             self.hide_entryform()
             self.ativar_emcurso()
             self.btn_add.configure(state="enabled")
@@ -1628,7 +1633,7 @@ class Janela:
 
     def hide_entryform(self, *event):
         global entryform_visible
-        if entryform_visible == 1:
+        if entryform_visible:
             entryform_visible = 0
             self.btn_add.configure(state="enabled")
             self.status_txt.set("Cancelando introdução de dados.")
@@ -1645,12 +1650,12 @@ class Janela:
         abrir_url(self.remessa_selecionada)
         root.after(300, self.bind_tree)
 
-            
+
     def atualizar_remessa_selecionada(self):
         curItem = self.tree.focus()
         tree_linha = self.tree.item(curItem)
         try:
-            tree_obj_num = tree_linha["values"][3]            
+            tree_obj_num = tree_linha["values"][3]
         except Exception as e:
             print("self.atualizar_remessa_selecionada() > Exception:", e)
             self.remessa_selecionada = ""
@@ -1661,14 +1666,14 @@ class Janela:
             tree_destin = tree_linha["values"][1]
             self.status_txt.set("Remessa selecionada: {} ({})".format(tree_obj_num, tree_destin))
             self.remessa_selecionada = tree_obj_num
-        
+
 
     def mostrar_detalhe(self, *event):
         global DB_PATH
         global detalhe_visible
         self.unbind_tree()
-                
-        if detalhe_visible == 1:
+
+        if detalhe_visible:
             self.hide_detalhe()
             return
 
@@ -1680,9 +1685,9 @@ class Janela:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT * 
-                     FROM remessas 
-                     WHERE (obj_num = ?);''', 
+        c.execute('''SELECT *
+                     FROM remessas
+                     WHERE (obj_num = ?);''',
                      (self.remessa_selecionada,))
         detalhes = c.fetchone()
         conn.commit()
@@ -1704,7 +1709,7 @@ class Janela:
         else:
             chq_recebido = "N/D"
 
-        if (valor_cobr != 0) and (detalhes[7] != 0):
+        if (valor_cobr != 0) and (detalhes[7] != 0) and (detalhes[7] != None):
             dt_data_depositar = datetime.strptime(detalhes[7], "%Y-%m-%d %H:%M:%S.%f")
             data_depositar = datetime.strftime(dt_data_depositar,"%Y-%m-%d")
         else:
@@ -1730,10 +1735,7 @@ class Janela:
 
         estado_detalhado = detalhes[16]  # TEXT
 
-        style_label = ttk.Style()
-        style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
         self.dfl_remessa = ttk.Label(self.detalheframe, style="BW.TLabel", text="Detalhes da Remessa:  {}\n".format(destin))
-
 
         self.dlf_obj_num = ttk.Label(self.detalheframe, text="Nº Objeto: {}".format(obj_num))
         self.dfl_exp = ttk.Label(self.detalheframe, text="Data de expedição:  {}".format(data_exp))
@@ -1807,11 +1809,12 @@ class Janela:
         root.after(300, self.bind_tree)
 
 
+
     def hide_detalhe(self, *event):
         global detalhe_visible
         self.statusframe.lift()
 
-        if detalhe_visible == 1:
+        if detalhe_visible:
             detalhe_visible = 0
             # animação de saída do painel de detalhes:
             for y in range(0,14,2):
@@ -1822,14 +1825,15 @@ class Janela:
                     widget.destroy()
             self.detalheframe.update()
             self.detalheframe.place_forget()
-            
+
             self.status_txt.set("Regressando ao painel principal.")
         else:
             self.detalheframe.place_forget()
-                
+
         self.bind_tree()
 
-                
+
+
 if __name__ == "__main__":
     print("\nBem-vindo(a) ao {} ({})!\n".format(__app_name__, __version__))
     print(__copyright__)

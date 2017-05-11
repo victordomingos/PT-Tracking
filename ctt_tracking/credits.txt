@@ -11,6 +11,7 @@ Andrey Petrov,
 a.k.a. shazow@StackOverflow
 
 Bryan Oakley
+Márcio Araújo
 Padraic Cunningham
 Pytonista@StackOverflow
 Mixone@StackOverflow

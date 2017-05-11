@@ -7,11 +7,11 @@ from tkinter import ttk
 from global_setup import *
 
 
-__app_name__ = "PT Tracking 2016"
+__app_name__ = "PT Tracking 2017"
 __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
-__version__ = "v.2.8"
+__version__ = "v.2.9"
 __email__ = "web@victordomingos.com"
 __status__ = "Beta"
 

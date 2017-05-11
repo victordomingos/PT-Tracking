@@ -4,6 +4,12 @@ Histórico de versões:
 ====================
 
 
+v.2.10 beta - ?
+ * Adicionada especificação explícita para usar a codificação de texto UTF-8 no
+   terminal (em alguns ambientes de execução o programa poderia não correr caso
+   outra codificação de texto estivesse em uso).
+
+---
 v.2.9 beta - 11/05/2017
  * Adicionada função de exportação de base de dados simplificada para
    dispositivos móveis (apenas campos visíveis e remessas ativas).

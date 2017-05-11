@@ -29,7 +29,7 @@ __app_name__ = "PT-Tracking para iOS"
 __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
-__version__ = "2.0"
+__version__ = "2.0.1"
 __email__ = "web@victordomingos.com"
 __status__ = "alpha"
 
@@ -286,7 +286,7 @@ def verificar_estado(tracking_code):
     ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
     estado = "- N/A -"
     try:
-        html = requests.get(ctt_url).content
+        html = requests.get(ctt_url, timeout=(5,30)).content
         soup = BeautifulSoup(html, "html.parser")
         table = soup.find('table')
         cells = table('td')
@@ -296,7 +296,7 @@ def verificar_estado(tracking_code):
             estado = cells[9].renderContents()
             estado = clean(estado, tags=[], strip=True).strip()
     except Exception as erro:
-        pass
+        print(erro)
         #print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
     return(estado)
 

@@ -4,16 +4,18 @@ Histórico de versões:
 ====================
 
 
-v.2.8 beta - ?
+v.2.9 beta - 11/05/2017
  * Adicionada função de exportação de base de dados simplificada para
    dispositivos móveis (apenas campos visíveis e remessas ativas).
- * Ficheiro de base de dados simplificada é comprimido (zip) para reduzir
+ * Ficheiro da base de dados simplificada é comprimido (zip) para reduzir
    tráfego de dados e tempo de transferência.
  * O botão "Adicionar" no painel de introdução de dados é agora destacado como 
    ativo, seguindo a recomendação das macOS Human Interface Guidelines.
  * A atualização da base de dados no arranque da aplicação agora é feita após
    a abertura da janela, para permitir visualizar mais rapidamente a lista.
- * Adicionado um limite de tempo ao verificar estado. Caso a ligação não seja possível, desbloqueia a interface de utilizador mais rapidamente.
+ * Adicionado um limite de tempo ao verificar estado. Caso a ligação não seja
+   possível, desbloqueia a interface de utilizador mais rapidamente.
+ * Corrigido um bug que podia impedir a abertura do painel de detalhes.
 
 ---
 v.2.7 beta - 20/08/2016

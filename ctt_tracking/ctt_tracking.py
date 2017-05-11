@@ -289,7 +289,7 @@ class Janela:
         self.topframe.pack(side=TOP, fill=X)
         self.mainframe.pack(side=TOP, fill=BOTH)
         self.statusframe.pack(side=BOTTOM, before=self.mainframe, fill=X)
-        self.mainframe.after(1000, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
+        self.mainframe.after(2000, self.atualizacao_periodica)  # inicia processo de atualização automática e periódica
         self.ativar_emcurso()
 
     def expedir_select(self, event):

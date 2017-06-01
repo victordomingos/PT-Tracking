@@ -5,22 +5,17 @@ Este módulo é parte integrante da aplicação PT Tracking, desenvolvida por
 Victor Domingos e distribuída sob os termos da licença Creative Commons
 Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 """
-
 import re
 import sqlite3
-import tkinter.font
 import os
 import sys
 import io
 import webbrowser
 import shlex
-import Pmw
+import tkinter as tk
+from tkinter import ttk, messagebox
 from datetime import time, datetime, timedelta
-from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
 from string import ascii_letters
-
 
 # Nota: Os seguintes módulos requerem instalação prévia
 from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
@@ -33,7 +28,6 @@ from misc_operations import *
 from global_setup import *
 from extra_tk_classes import *
 from about_window import *
-
 
 __app_name__ = "PT Tracking 2017"
 
@@ -126,7 +120,6 @@ class Callbacks():
             # occurs when items do not fill frame
             # no action required
             pass
-
 
 
     def thanks(self,*event):
@@ -364,7 +357,6 @@ class Callbacks():
                     if data_exp < (hoje-timedelta(15)):  # Se já passou algum tempo desde expedição...
                         tag_cor = "falta_chq"
 
-
             self.oop.tree.insert("", n_remessas, tag=tag_cor, text ="Texto_nao_sei_que",
                                     values=(dias,
                                             row[1],  # destin
@@ -375,7 +367,6 @@ class Callbacks():
                                             data_r_chq,  # Data de recebimento de cheque
                                             data_dep_chq,  #Data prevista de depósito
                                             ))
-
 
             n_remessas += 1
             volumes += int(row[8])
@@ -402,8 +393,8 @@ class Callbacks():
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
         c.execute ("""SELECT *
-                                    FROM remessas
-                                    WHERE (valor_cobr > 0) AND (arquivado = 0);""")
+                      FROM remessas
+                      WHERE (valor_cobr > 0) AND (arquivado = 0);""")
         for i in self.oop.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
                 self.oop.tree.delete(i)
         n_remessas = 0
@@ -448,7 +439,6 @@ class Callbacks():
                         tag_cor = "falta_chq"
                         cobr_atrasadas += 1
 
-
             self.oop.tree.insert("", n_remessas, tag=tag_cor, text ="Texto_nao_sei_que",
                                     values=(dias,
                                             row[1],  # destin
@@ -459,7 +449,6 @@ class Callbacks():
                                             data_r_chq,  # Data de recebimento de cheque
                                             data_dep_chq,  #Data prevista de depósito
                                             ))
-
             n_remessas += 1
             volumes += int(row[8])
             if float(row[5]) > 0.0:
@@ -488,34 +477,34 @@ class Callbacks():
 
 
     def liga_chq_recebido(self):
-            """
-            Transforma o botão de "Depósito" em "Cheque"
-            """
-            self.oop.btn_pag.config(text=" ✅", command=self.pag_recebido)
-            self.oop.label_pag.config(text="Cheque Rec.")
+        """
+        Transforma o botão de "Depósito" em "Cheque"
+        """
+        self.oop.btn_pag.config(text=" ✅", command=self.pag_recebido)
+        self.oop.label_pag.config(text="Cheque Rec.")
 
     def liga_depositar_chq(self):
-            """
-            Transforma o botão de "Cheque" em "Depositar"
-            """
-            self.oop.btn_pag.config(text=" ⏬", command=self.chq_depositado)
-            self.oop.label_pag.config(text="Depositar")
+        """
+        Transforma o botão de "Cheque" em "Depositar"
+        """
+        self.oop.btn_pag.config(text=" ⏬", command=self.chq_depositado)
+        self.oop.label_pag.config(text="Depositar")
 
 
     def liga_restaurar(self):
-            """
-            Transforma o botão de "Arquivar" em "Restaurar"
-            """
-            self.oop.btn_del.config(text=" ⤴️")
-            self.oop.label_del.config(text="Restaurar")
+        """
+        Transforma o botão de "Arquivar" em "Restaurar"
+        """
+        self.oop.btn_del.config(text=" ⤴️")
+        self.oop.label_del.config(text="Restaurar")
 
 
     def liga_arquivar(self):
-            """
-            Transforma o botão de "Restaurar" em "Arquivar"
-            """
-            self.oop.btn_del.config(text="❌")
-            self.oop.label_del.config(text="Arquivar")
+        """
+        Transforma o botão de "Restaurar" em "Arquivar"
+        """
+        self.oop.btn_del.config(text="❌")
+        self.oop.label_del.config(text="Arquivar")
 
 
     def ativar_arquivo(self, *event):
@@ -528,50 +517,49 @@ class Callbacks():
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
         c.execute ("""SELECT *
-                                    FROM remessas
-                                    WHERE (arquivado = 1)
-                                    ORDER BY data_exp DESC;""")
+                      FROM remessas
+                      WHERE (arquivado = 1)
+                      ORDER BY data_exp DESC;""")
         for i in self.oop.tree.get_children():  # Limpar tabela antes de obter registos atualizados da base de dados
-                self.oop.tree.delete(i)
+            self.oop.tree.delete(i)
         n_remessas = 0
         volumes = 0
         com_cobranca = 0
         tot_cobr = 0.0
         stag = "par"
         for row in c:  # Preencher cada linha da tabela com os valores obtidos da base de dados
-                data_exp = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S.%f")
-                dias = calcular_dias_desde_envio(data_exp)
+            data_exp = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S.%f")
+            dias = calcular_dias_desde_envio(data_exp)
 
-                if row[5] == "0":  # Se remessa sem cobrança
-                        data_r_chq = " "
-                        data_dep_chq = " "
-                else:  # Se remessa com cobrança
-                        cobr = row[5]
-                        dt_data_dep_chq = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S.%f")
-                        data_dep_chq = datetime.strftime(dt_data_dep_chq,"%Y-%m-%d")
-                        if row[6] != "N/D":  # Se ainda não chegou o cheque
-                                        dt_data_r_chq = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S.%f")
-                                        data_r_chq = datetime.strftime(dt_data_r_chq,"%Y-%m-%d")
-                        else:  # Se já chegou o cheque
-                                        data_r_chq = row[6]
+            if row[5] == "0":  # Se remessa sem cobrança
+                data_r_chq = " "
+                data_dep_chq = " "
+            else:  # Se remessa com cobrança
+                cobr = row[5]
+                dt_data_dep_chq = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S.%f")
+                data_dep_chq = datetime.strftime(dt_data_dep_chq,"%Y-%m-%d")
+                if row[6] != "N/D":  # Se ainda não chegou o cheque
+                    dt_data_r_chq = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S.%f")
+                    data_r_chq = datetime.strftime(dt_data_r_chq,"%Y-%m-%d")
+                else:  # Se já chegou o cheque
+                    data_r_chq = row[6]
 
 
-                self.oop.tree.insert("", n_remessas, tag=stag, text ="Texto_nao_sei_que",
-                                                values=(dias,
-                                                                row[1],  # destin
-                                                                row[2],  # Estado
-                                                                row[3],  # Obj nº
-                                                                row[8],  # Nº de volumes
-                                                                row[5],  # Cobrança
-                                                                data_r_chq,  # Data de recebimento de cheque
-                                                                data_dep_chq,  #Data prevista de depósito
-                                                                ))
-
-                n_remessas += 1
-                volumes += int(row[8])
-                if float(row[5]) > 0.0:
-                        com_cobranca += 1
-                        tot_cobr += float(row[5])
+            self.oop.tree.insert("", n_remessas, tag=stag, text ="Texto_nao_sei_que",
+                                 values=(dias,
+                                 row[1],  # destin
+                                 row[2],  # Estado
+                                 row[3],  # Obj nº
+                                 row[8],  # Nº de volumes
+                                 row[5],  # Cobrança
+                                 data_r_chq,  # Data de recebimento de cheque
+                                 data_dep_chq,  #Data prevista de depósito
+                                ))
+            n_remessas += 1
+            volumes += int(row[8])
+            if float(row[5]) > 0.0:
+                    com_cobranca += 1
+                    tot_cobr += float(row[5])
 
         c.close()
 
@@ -643,8 +631,6 @@ class Callbacks():
                                         data_r_chq,  # Data de recebimento de cheque
                                         data_dep_chq,  #Data prevista de depósito
                                         ))
-
-
             n_remessas += 1
             volumes += int(row[8])
             if float(row[5]) > 0.0:
@@ -688,7 +674,6 @@ class Callbacks():
             self.oop.text_input_destin.focus_set()
             return
 
-
         if add_vols == "":
             add_vols = "1"
         else:
@@ -699,12 +684,10 @@ class Callbacks():
                 self.oop.text_input_vols.focus_set()
                 return
 
-
         if (add_expedidor not in EXPEDIDORES):
             self.oop.status_txt.set("Por favor selecione o expedidor.")
             self.oop.combo_expedidor.focus_set()
             return
-
 
         if add_cobr == "":
             add_cobr = "0"
@@ -735,7 +718,6 @@ class Callbacks():
                     return
         data_dep = calcular_data_deposito(agora, num_dias)
         # reunir variáveis que faltam #TODO
-
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
@@ -773,8 +755,6 @@ class Callbacks():
         self.oop.text_input_obj.focus_set()
         self.clear_text()
 
-
-    # Registar pagamento recebido -------------------------------------------------------------------------------------
 
     def pag_recebido(self, *event):
         """
@@ -1470,14 +1450,14 @@ class Callbacks():
         self.oop.dfl_exp = ttk.Label(self.oop.detalheframe, text="Data de expedição:  {}".format(data_exp))
         self.oop.dfl_vols = ttk.Label(self.oop.detalheframe, text="Nº de volumes: {}".format(vols))
 
-        self.oop.dfl_remessa.grid(column=0, row=0, columnspan=7, sticky=W)
-        self.oop.dlf_obj_num.grid(column=0, row=1, sticky=W)
-        self.oop.dfl_exp.grid(column=0, row=2, sticky=W)
-        self.oop.dfl_vols.grid(column=0, row=3, sticky=W)
+        self.oop.dfl_remessa.grid(column=0, row=0, columnspan=7, sticky='w')
+        self.oop.dlf_obj_num.grid(column=0, row=1, sticky='w')
+        self.oop.dfl_exp.grid(column=0, row=2, sticky='w')
+        self.oop.dfl_vols.grid(column=0, row=3, sticky='w')
 
         if obs != "":
             self.oop.dfl_obs = ttk.Label(self.oop.detalheframe, text="Observações: {}".format(obs))
-            self.oop.dfl_obs.grid(column=0, row=4, columnspan=3, sticky=W)
+            self.oop.dfl_obs.grid(column=0, row=4, columnspan=3, sticky='w')
 
         str_valor_cobr = "Remessa sem cobrança" if valor_cobr == "0" else "Cobrança: {:,.2f}€".format(float(valor_cobr))
         self.oop.dfl_cobr = ttk.Label(self.oop.detalheframe, text=str_valor_cobr)
@@ -1487,12 +1467,12 @@ class Callbacks():
 
         self.oop.dfl_arquivo = ttk.Label(self.oop.detalheframe, text="Remessa arquivada: {}".format(str_arquivado))
 
-        self.oop.dfl_cobr.grid(column=1, row=1, sticky=W)
-        self.oop.dfl_rma.grid(column=1, row=2, sticky=W)
-        self.oop.dfl_arquivo.grid(column=1, row=3, sticky=W)
+        self.oop.dfl_cobr.grid(column=1, row=1, sticky='w')
+        self.oop.dfl_rma.grid(column=1, row=2, sticky='w')
+        self.oop.dfl_arquivo.grid(column=1, row=3, sticky='w')
 
 
-        ttk.Label(self.oop.detalheframe, text="Expedidor: {}".format(expedidor)).grid(column=0, row=6, sticky=W)
+        ttk.Label(self.oop.detalheframe, text="Expedidor: {}".format(expedidor)).grid(column=0, row=6, sticky='w')
 
         if valor_cobr !="0":
             str_chq_recebido = "Não" if chq_recebido == "N/D" else chq_recebido
@@ -1500,29 +1480,29 @@ class Callbacks():
             self.oop.dfl_data_depositar = ttk.Label(self.oop.detalheframe, text="Depósito previsto:  {}".format(data_depositar))
             str_data_depositado = "Não" if data_depositado == 0 else data_depositado
             self.oop.dfl_data_depositado = ttk.Label(self.oop.detalheframe, text="Depósito efetuado: {}".format(str_data_depositado))
-            self.oop.dfl_chq_rec.grid(column=2, row=1, sticky=W)
-            self.oop.dfl_data_depositar.grid(column=2, row=2, sticky=W)
-            self.oop.dfl_data_depositado.grid(column=2, row=3, sticky=W)
+            self.oop.dfl_chq_rec.grid(column=2, row=1, sticky='w')
+            self.oop.dfl_data_depositar.grid(column=2, row=2, sticky='w')
+            self.oop.dfl_data_depositado.grid(column=2, row=3, sticky='w')
 
-        ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky=W+E)
+        ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky='we')
 
         self.oop.S = AutoScrollbar(self.oop.detalheframe)
         self.oop.T = Text(self.oop.detalheframe, height=19, width=100)
-        self.oop.S.grid(column=7, row=8, sticky=W+N+S)
-        self.oop.T.grid(column=0, columnspan=7, row=8,sticky=W+N+E)
+        self.oop.S.grid(column=7, row=8, sticky='wns')
+        self.oop.T.grid(column=0, columnspan=7, row=8,sticky='wne')
         self.oop.S.config(command=self.oop.T.yview)
         self.oop.T.config(yscrollcommand=self.oop.S.set)
         self.oop.T.insert(END, estado_detalhado, 'tabela')
         self.oop.T.tag_config('tabela', foreground='#476042', justify="center", font=('Andale Mono', 12, 'bold'))
 
         self.oop.btn_fechar_det = ttk.Button(self.oop.detalheframe, text="Fechar", command=self.hide_detalhe)
-        self.oop.btn_fechar_det.grid(column=6, row=1, sticky=W+E)
+        self.oop.btn_fechar_det.grid(column=6, row=1, sticky='we')
 
         self.oop.btn_arquivar_det = ttk.Button(self.oop.detalheframe, text="Arquivar", command=self.del_remessa)
-        self.oop.btn_arquivar_det.grid(column=6, row=2, sticky=W+E)
+        self.oop.btn_arquivar_det.grid(column=6, row=2, sticky='we')
 
         self.oop.btn_ver_web = ttk.Button(self.oop.detalheframe, text="Ver na Web", command=self.abrir_url_browser)
-        self.oop.btn_ver_web.grid(column=6, row=3, sticky=W+E)
+        self.oop.btn_ver_web.grid(column=6, row=3, sticky='we')
 
         for col in range(6):
             self.oop.detalheframe.columnconfigure(col, weight=1)
@@ -1536,7 +1516,6 @@ class Callbacks():
         self.oop.status_txt.set("A mostrar detalhes de remessa: {} ({})".format(obj_num, destin))
         self.oop.detalheframe.bind_all("<Escape>", self.hide_detalhe)
         self.oop.master.after(300, self.bind_tree)
-
 
 
     def hide_detalhe(self, *event):

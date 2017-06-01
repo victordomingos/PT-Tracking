@@ -15,40 +15,22 @@ Desenvolvido em Python 3 (com muitas noites passadas em claro) por:
         Victor Domingos
         http://victordomingos.com
 
-
 © 2017 Victor Domingos
 Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 """
-
-import re
-import sqlite3
-import tkinter.font
-import os
 import sys
 import io
-import webbrowser
-import shlex
 import Pmw
-from datetime import time, datetime, timedelta
+import tkinter.font
 from tkinter import *
 from tkinter import ttk
-from tkinter import messagebox
 from string import ascii_letters
-
-
-# Nota: Os seguintes módulos requerem instalação prévia
-from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
-from bleach import clean
-from bs4 import BeautifulSoup
-import requests
 
 # Os outros módulos que compõem esta aplicação
 from misc_operations import *
 from global_setup import *
 from extra_tk_classes import *
-from about_window import *
 from callbacks_main import Callbacks
-
 
 __app_name__ = "PT Tracking 2017"
 __author__ = "Victor Domingos"
@@ -95,15 +77,6 @@ class Janela:
         style_label = ttk.Style()
         style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
         style_label.configure("Active.TButton", foreground="white")
-
-
-        # Cabeçalho da aplicação  -------------------------------------------------------------------------------------
-        #self.headframe = ttk.Frame(root, padding="3 8 3 3")
-        """
-        head_label3 = ttk.Label(self.headframe, text="head text3 RIGHT")
-        head_label3.pack(side=RIGHT)
-        """
-
 
         # Barra de ferramentas / botões -------------------------------------------------------------------------------
         self.topframe = ttk.Frame(root, padding="5 8 5 5")
@@ -162,13 +135,11 @@ class Janela:
         self.dicas.bind(self.menu_btn, 'Clique para selecionar qual a informação\na copiar para a Área de Transferência.')
         # ----------- fim de Botão com menu "copiar" -------------
 
-
         self.btn_add = ttk.Button(self.topframe, text="+", width=4, command=self.callBacks.show_entryform)
         self.btn_add.grid(column=13, row=0)
         self.label_add = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Adicionar")
         self.label_add.grid(column=13, row=1)
         self.dicas.bind(self.btn_add, 'Registar nova remessa. (⌘N)')
-
 
         self.text_input_pesquisa = ttk.Entry(self.topframe, width=15)
         self.text_input_pesquisa.grid(column=14, row=0)
@@ -177,14 +148,14 @@ class Janela:
 
         letras_etc = ascii_letters + "01234567890-., "
         for char in letras_etc:
-                keystr = '<KeyRelease-' + char + '>'
-                self.text_input_pesquisa.bind(keystr, self.callBacks.ativar_pesquisa)
+            keystr = '<KeyRelease-' + char + '>'
+            self.text_input_pesquisa.bind(keystr, self.callBacks.ativar_pesquisa)
         self.text_input_pesquisa.bind('<Button-1>', self.callBacks.clique_a_pesquisar)
         self.text_input_pesquisa.bind('<KeyRelease-Escape>', self.callBacks.cancelar_pesquisa)
         self.text_input_pesquisa.bind('<KeyRelease-Mod2-a>', self.text_input_pesquisa.select_range(0, END))
 
         for col in range(1,15):
-                self.topframe.columnconfigure(col, weight=0)
+            self.topframe.columnconfigure(col, weight=0)
         self.topframe.columnconfigure(5, weight=1)
         self.topframe.columnconfigure(11, weight=1)
 
@@ -206,8 +177,8 @@ class Janela:
 
         # Ordenar por coluna ao clicar no respetivo cabeçalho
         for col in self.tree['columns']:
-                self.tree.heading(col, text=col.title(),
-                        command=lambda c=col: self.sortBy(self.tree, c, 0))
+            self.tree.heading(col, text=col.title(), 
+                              command=lambda c=col: self.sortBy(self.tree, c, 0))
 
         # Barra de deslocação para a tabela
         self.tree.grid(column=0, row=0, sticky=N+W+E, in_=self.mainframe)
@@ -254,7 +225,6 @@ class Janela:
         self.text_input_vols.grid(column=5, row=2, sticky=W+E)
         self.text_input_vols.bind("<Return>", self.callBacks.add_remessa)
 
-
         ttk.Label(self.bottomframe, text="Expedidor").grid(column=0, row=3, sticky=W+E)
         self.combo_expedidor = ttk.Combobox(self.bottomframe, width=13, values=(" - Selecionar -",)+EXPEDIDORES, state="readonly")
         self.combo_expedidor.current(0)
@@ -262,16 +232,13 @@ class Janela:
         self.combo_expedidor.bind("<<ComboboxSelected>>", self.callBacks.expedir_select)
         self.combo_expedidor.bind("<Return>", self.callBacks.add_remessa)
 
-
         ttk.Label(self.bottomframe, text="Observações").grid(column=1, columnspan=4, row=3, sticky=W)
         self.text_input_obs = ttk.Entry(self.bottomframe, width=40)
         self.text_input_obs.grid(column=1, columnspan=4, row=4, sticky=W+E)
 
-
         ttk.Label(self.bottomframe, text="RMA").grid(column=5, row=3, sticky=W+E)
         self.text_input_rma = ttk.Entry(self.bottomframe, width=13)
         self.text_input_rma.grid(column=5, row=4, sticky=W+E)
-
 
         self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default="active", style="Active.TButton", command=lambda: self.callBacks.add_remessa)
         self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
@@ -282,13 +249,10 @@ class Janela:
         self.btn_cancelar.grid(column=6, row=4, sticky=W+E)
 
         for col in range(6):
-                self.bottomframe.columnconfigure(col, weight=1)
-
+            self.bottomframe.columnconfigure(col, weight=1)
 
         # Painel de detalhes de remessa (aparece somente quando o utilizador solicita) ----------------------------
         self.detalheframe = ttk.Frame(root, padding="5 8 5 5")
-
-
 
         # Painel de informação (entre a tabela e o formulário de entrada de dados) ------------------------------------
         self.statusframe = ttk.Frame(root, padding="5 5 5 5")
@@ -302,7 +266,6 @@ class Janela:
         self.statusbar = ttk.Label(self.statusframe, font=self.statusFont, foreground=self.btnTxtColor, textvariable=self.status_txt)
         self.statusbar.pack(side=BOTTOM)
 
-
         # Ativar layout -----------------------------------------------------------------------------------------------
         self.callBacks.gerar_menu()
         #self.headframe.pack(side=TOP, fill=X)
@@ -311,7 +274,6 @@ class Janela:
         self.statusframe.pack(side=BOTTOM, before=self.mainframe, fill=X)
         self.mainframe.after(2000, self.callBacks.atualizacao_periodica)  # inicia processo de atualização automática e periódica
         self.callBacks.ativar_emcurso()
-
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ Requer adicionalmente os seguintes módulos externos:
   - requests 2.9.1
   - terminaltables 2.1.0
   - html5lib 0.999999
+  - Pmw 2.0.1
 
 Para instalar facilmente estas dependências, pode ser utilizado o seguinte comando:
 

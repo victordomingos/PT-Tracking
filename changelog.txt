@@ -9,14 +9,16 @@ v.2.10 beta - ?
  * Adicionada especificação explícita para usar a codificação de texto UTF-8 no
    terminal (em alguns ambientes de execução o programa poderia não correr caso
    outra codificação de texto estivesse em uso).
+ * Reorganização do código (separação das callbacks da classe principal para
+   um módulo separado.
 
 ---
 v.2.9 beta - 11/05/2017
  * Adicionada função de exportação de base de dados simplificada para
    dispositivos móveis (apenas campos visíveis e remessas ativas).
- * Ficheiro da base de dados simplificada é comprimido (zip) para reduzir
+ * Ficheiro de base de dados simplificada é comprimido (zip) para reduzir
    tráfego de dados e tempo de transferência.
- * O botão "Adicionar" no painel de introdução de dados é agora destacado como 
+ * O botão "Adicionar" no painel de introdução de dados é agora destacado como
    ativo, seguindo a recomendação das macOS Human Interface Guidelines.
  * A atualização da base de dados no arranque da aplicação agora é feita após
    a abertura da janela, para permitir visualizar mais rapidamente a lista.
@@ -29,7 +31,7 @@ v.2.7 beta - 20/08/2016
    o nome de algum destinatário continha certos caracteres.
  * Atualização do código de obtenção de estado detalhado.
  * Atualização do ficheiro de dependências.
- 
+
 ---
 v.2.6 beta - 29/07/2016
  * Corrigido um bug no menu de contexto que poderia originar um ciclo infinito
@@ -37,7 +39,7 @@ v.2.6 beta - 29/07/2016
  * Adicionado campo "Expedidor" no formulário de entrada de dados e no painel
    de detalhes.
  * Adicionada função "Copiar > Lista de envios por expedidor"
- 
+
 ---
 v.2.5 beta - 9/07/2016
  * Atualização online automática com os estados estados atuais das remessas
@@ -46,7 +48,7 @@ v.2.5 beta - 9/07/2016
  * Lista de envios de hoje ("Copiar") agora é ordenada por destino e valor de
    cobrança.
  * Alterações menores nas funções "copiar lista de cheques".
- 
+
 ---
 v.2.4 beta - 7/07/2016
  * Adicionado botão-menu "Copiar..."

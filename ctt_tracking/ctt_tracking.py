@@ -28,6 +28,7 @@ import sys
 import io
 import webbrowser
 import shlex
+import Pmw
 from datetime import time, datetime, timedelta
 from tkinter import *
 from tkinter import ttk
@@ -68,6 +69,14 @@ class Janela:
         master.maxsize(width=1024, height=2000)
         
         self.callBacks = Callbacks(self)  # Vai buscar ao módulo externo os métodos que pertenciam a esta classe.
+
+        self.dicas = Pmw.Balloon(self.master, label_background='#f6f6f6',
+                                              hull_highlightbackground='#b3b3b3',
+                                              state='balloon',
+                                              relmouse='both',
+                                              yoffset=18,
+                                              xoffset=-2,
+                                              initwait=1300)
         
         self.janela_thanks = None
         self.janela_about = None
@@ -102,32 +111,36 @@ class Janela:
         self.btnTxtColor = "grey22"
 
         self.btn_emcurso = ttk.Button(self.topframe, width=4, text="✈", command=self.callBacks.ativar_emcurso)
-
         self.btn_emcurso.grid(column=0, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Em Curso").grid(column=0, row=1)
+        self.dicas.bind(self.btn_emcurso, 'Mostrar apenas as remessas que se encontram em curso.')
 
         self.btn_cobr = ttk.Button(self.topframe, width=4, text="€", command=self.callBacks.ativar_cobr)
         self.btn_cobr.grid(column=1, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Cobrança").grid(column=1, row=1)
+        self.dicas.bind(self.btn_cobr, 'Mostrar apenas as remessas com cobrança\nque se encontram em curso.')
 
         self.btn_arquivo = ttk.Button(self.topframe, text="☰", width=4, command=self.callBacks.ativar_arquivo)
         self.btn_arquivo.grid(column=3, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivo").grid(column=3, row=1)
-
+        self.dicas.bind(self.btn_arquivo, 'Mostrar apenas as remessas arquivadas.')
+        
         self.btn_pag = ttk.Button(self.topframe, text=" ✅", width=4, command=self.callBacks.pag_recebido)
         self.btn_pag.grid(column=7, row=0)
         self.label_pag = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Cheque Rec.")
         self.label_pag.grid(column=7, row=1)
+        self.dicas.bind(self.btn_pag, 'Registar pagamento recebido referente à remessa selecionada.')
 
         self.btn_del = ttk.Button(self.topframe, text="❌", width=4, command=self.callBacks.del_remessa)
         self.btn_del.grid(column=8, row=0)
         self.label_del = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivar")
         self.label_del.grid(column=8, row=1)
-
+        self.dicas.bind(self.btn_del, 'Arquivar a remessa selecionada.')
+        
         self.btn_hoje = ttk.Button(self.topframe, text=" ⚡", width=4, command=self.callBacks.copiar_hoje)
         self.btn_hoje.grid(column=9, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Hoje").grid(column=9, row=1)
-
+        self.dicas.bind(self.btn_hoje, 'Copiar a lista dos envios de hoje\npara a Área de Transferência.')
 
         # ----------- Botão com menu "copiar" --------------
         self.label_menu_btn = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Copiar…")
@@ -146,6 +159,7 @@ class Janela:
         self.menu_btn.menu.add_command(label="Lista de envios por expedidor", command=self.callBacks.copiar_lista_por_expedidor)
         self.menu_btn.grid(column=10, row=0)
         self.label_menu_btn.grid(column=10, row=1)
+        self.dicas.bind(self.menu_btn, 'Clique para selecionar qual a informação\na copiar para a Área de Transferência.')
         # ----------- fim de Botão com menu "copiar" -------------
 
 
@@ -153,11 +167,13 @@ class Janela:
         self.btn_add.grid(column=13, row=0)
         self.label_add = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Adicionar")
         self.label_add.grid(column=13, row=1)
+        self.dicas.bind(self.btn_add, 'Registar nova remessa. (⌘N)')
+
 
         self.text_input_pesquisa = ttk.Entry(self.topframe, width=15)
-
         self.text_input_pesquisa.grid(column=14, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Pesquisar").grid(column=14, row=1)
+        self.dicas.bind(self.text_input_pesquisa, 'Para iniciar a pesquisa, digite\numa palavra ou frase. (⌘F)')
 
         letras_etc = ascii_letters + "01234567890-., "
         for char in letras_etc:
@@ -299,8 +315,8 @@ class Janela:
 
 
 if __name__ == "__main__":
-    #sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-    #sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+    sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
     print("\nBem-vindo(a) ao {} ({})!\n".format(__app_name__, __version__))
     print(__copyright__)
     print(__license__)

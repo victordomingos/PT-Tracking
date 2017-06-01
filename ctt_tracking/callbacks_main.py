@@ -14,6 +14,7 @@ import sys
 import io
 import webbrowser
 import shlex
+import Pmw
 from datetime import time, datetime, timedelta
 from tkinter import *
 from tkinter import ttk

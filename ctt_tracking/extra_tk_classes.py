@@ -1,3 +1,11 @@
+#!/usr/bin/env python3.6
+# encoding: utf-8
+"""
+Este módulo é parte integrante da aplicação PT Tracking, desenvolvida por
+Victor Domingos e distribuída sob os termos da licença Creative Commons
+Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+"""
+
 from tkinter import *
 from tkinter import ttk
 

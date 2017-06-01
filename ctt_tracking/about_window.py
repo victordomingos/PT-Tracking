@@ -1,3 +1,10 @@
+#!/usr/bin/env python3.6
+# encoding: utf-8
+"""
+Este módulo é parte integrante da aplicação PT Tracking, desenvolvida por
+Victor Domingos e distribuída sob os termos da licença Creative Commons
+Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+"""
 import sqlite3
 import os.path
 import os
@@ -12,7 +19,7 @@ __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 __version__ = "v.2.10"
-__email__ = "web@victordomingos.com"
+__email__ = "victor@promais.com"
 __status__ = "Beta"
 
 
@@ -53,8 +60,8 @@ class thanks_window:
         self.close_button.pack()
         self.thanksframe.pack(side=TOP)
         self.thanksframe_bottom.pack(side=BOTTOM)
-            
-       
+
+
 
 class about_window:
     def __init__(self):
@@ -69,7 +76,7 @@ class about_window:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute('''SELECT vols, valor_cobr 
+        c.execute('''SELECT vols, valor_cobr
                      FROM remessas;''')
 
         for row in c:
@@ -81,7 +88,7 @@ class about_window:
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        c.execute("""SELECT DISTINCT destin 
+        c.execute("""SELECT DISTINCT destin
                      FROM remessas;""")
         for row in c:
             destinos +=1
@@ -109,7 +116,7 @@ class about_window:
         pframe_topo = ttk.Frame(popupRoot, padding="10 10 10 2")
         pframe_meio = ttk.Frame(popupRoot, padding="10 2 2 10")
         pframe_fundo = ttk.Frame(popupRoot, padding="10 2 10 10")
-        
+
         os.chdir(os.path.dirname(__file__))
         icon_path = os.getcwd()
         icon_path += "/images/icon.gif"
@@ -122,7 +129,7 @@ class about_window:
 
         appfont = font.Font(size=15, weight='bold')
         copyfont = font.Font(size=10)
-        
+
         #---------- TOPO -----------
         app_lbl = ttk.Label(pframe_topo, font=appfont, text=__app_name__)
         assin_lbl = ttk.Label(pframe_topo,text="\nO gestor avançado de logística da {}.\n".format(EMPRESA))
@@ -136,7 +143,7 @@ class about_window:
 
 
         #---------- FUNDO -----------
-        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n\n\n© 2017 Victor Domingos")
+        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n\n\n© 2016 Victor Domingos")
         license_lbl = ttk.Label(pframe_fundo, font=copyfont, text=__license__)
 
 
@@ -154,13 +161,13 @@ class about_window:
         pframe_topo.pack(side=TOP)
         pframe_meio.pack(side=TOP)
         pframe_fundo.pack(side=TOP)
-        
+
         pframe_topo.focus()
 
         popupRoot.mainloop()
-    
-    
-     
+
+
+
 def thanks(*event):
     janela_thanks = thanks_window()
 
@@ -168,4 +175,3 @@ def thanks(*event):
 def about(*event):
     janela_thanks.destroy()
     janela_about = about_window()
-    

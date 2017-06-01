@@ -11,6 +11,8 @@ v.2.10 beta - ?
    outra codificação de texto estivesse em uso).
  * Reorganização do código (separação das callbacks da classe principal para
    um módulo separado.
+ * Adicionadas dicas aos botões e campo de pesquisa da barras de ferramentas.
+
 
 ---
 v.2.9 beta - 11/05/2017

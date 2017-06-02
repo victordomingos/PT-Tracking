@@ -16,7 +16,7 @@ DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/db_PT_Tracking_pre_alp
 MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite"
 ZIP_MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite.zip"
 
-# personalizar com o nome da empresa.
+# Personalizar com o nome da empresa.
 EMPRESA = "Nome da Empresa" 
 
 # Personalizar com os nomes dos expedidores a utilizar.

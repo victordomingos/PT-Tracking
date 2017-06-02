@@ -15,8 +15,12 @@ __app_name__ = "PT Tracking 2017"
 DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/db_PT_Tracking_pre_alpha.sqlite"
 MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite"
 ZIP_MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite.zip"
-EMPRESA = "Nome da Empresa" # personalizar com o nome da empresa.
-EXPEDIDORES = ("Expedidor 1", "Expedidor 2") # Personalizar com os nomes dos expedidores a utilizar.
+
+# personalizar com o nome da empresa.
+EMPRESA = "Nome da Empresa" 
+
+# Personalizar com os nomes dos expedidores a utilizar.
+EXPEDIDORES = ("Expedidor 1", "Expedidor 2")
 # ----------------------------------------------------
 
 
@@ -33,6 +37,9 @@ MSG_LINK = "\n\nEm alternativa, poderá utilizar diretamente o seguinte endereç
 MSG_OUTRO = "A encomenda deverá ser entregue no próximo dia útil. Se tal não acontecer, p.f. contacte-nos.\n\n"
 # ---------------------------------------------------------------------------
 
+
+# Especificar aqui o número correspondente ao expedidor a apresentar por predefinição no campo de introdução de dados.
+INDEX_EXPEDIDOR_PREDEFINIDO = "0"
 
 update_delay = 3600000  # Tempo de espera entre as atualizações automáticas (ms)
 NUNCA = 0

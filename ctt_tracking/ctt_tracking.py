@@ -86,34 +86,34 @@ class Janela:
         self.btn_emcurso = ttk.Button(self.topframe, width=4, text="✈", command=self.callBacks.ativar_emcurso)
         self.btn_emcurso.grid(column=0, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Em Curso").grid(column=0, row=1)
-        self.dicas.bind(self.btn_emcurso, 'Mostrar apenas as remessas que se encontram em curso.')
+        self.dicas.bind(self.btn_emcurso, 'Mostrar apenas as remessas que se encontram em curso. (⌘1)')
 
         self.btn_cobr = ttk.Button(self.topframe, width=4, text="€", command=self.callBacks.ativar_cobr)
         self.btn_cobr.grid(column=1, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Cobrança").grid(column=1, row=1)
-        self.dicas.bind(self.btn_cobr, 'Mostrar apenas as remessas com cobrança\nque se encontram em curso.')
+        self.dicas.bind(self.btn_cobr, 'Mostrar apenas as remessas com cobrança\nque se encontram em curso. (⌘2)')
 
         self.btn_arquivo = ttk.Button(self.topframe, text="☰", width=4, command=self.callBacks.ativar_arquivo)
         self.btn_arquivo.grid(column=3, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivo").grid(column=3, row=1)
-        self.dicas.bind(self.btn_arquivo, 'Mostrar apenas as remessas arquivadas.')
+        self.dicas.bind(self.btn_arquivo, 'Mostrar apenas as remessas arquivadas. (⌘3)')
         
         self.btn_pag = ttk.Button(self.topframe, text=" ✅", width=4, command=self.callBacks.pag_recebido)
         self.btn_pag.grid(column=7, row=0)
         self.label_pag = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Cheque Rec.")
         self.label_pag.grid(column=7, row=1)
-        self.dicas.bind(self.btn_pag, 'Registar pagamento recebido referente à remessa selecionada.')
+        self.dicas.bind(self.btn_pag, 'Registar a receção de pagamento\nreferente à remessa selecionada. (⌘R)')
 
         self.btn_del = ttk.Button(self.topframe, text="❌", width=4, command=self.callBacks.del_remessa)
         self.btn_del.grid(column=8, row=0)
         self.label_del = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivar")
         self.label_del.grid(column=8, row=1)
-        self.dicas.bind(self.btn_del, 'Arquivar a remessa selecionada.')
+        self.dicas.bind(self.btn_del, 'Arquivar a remessa selecionada. (⌘⌫)')
         
         self.btn_hoje = ttk.Button(self.topframe, text=" ⚡", width=4, command=self.callBacks.copiar_hoje)
         self.btn_hoje.grid(column=9, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Hoje").grid(column=9, row=1)
-        self.dicas.bind(self.btn_hoje, 'Copiar a lista dos envios de hoje\npara a Área de Transferência.')
+        self.dicas.bind(self.btn_hoje, 'Copiar a lista dos envios de hoje\npara a Área de Transferência. (⌘T)')
 
         # ----------- Botão com menu "copiar" --------------
         self.label_menu_btn = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Copiar…")

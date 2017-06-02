@@ -111,7 +111,7 @@ class Callbacks():
                 self.oop.tree.selection_set(iid)
                 self.oop.tree.focus(iid)
                 self.oop.contextMenu.post(event.x_root, event.y_root)
-                print("popupMenu(): x,y = ", event.x_root, event.y_root)
+                #print("popupMenu(): x,y = ", event.x_root, event.y_root)
             else:
                 print("popupMenu(): wrong values for event - x=0, y=0")
         else:
@@ -478,10 +478,12 @@ class Callbacks():
 
     def liga_chq_recebido(self):
         """
-        Transforma o botão de "Depósito" em "Cheque"
+        Transforma o botão de "Depositar" em "Cheque"
         """
         self.oop.btn_pag.config(text=" ✅", command=self.pag_recebido)
         self.oop.label_pag.config(text="Cheque Rec.")
+        self.oop.dicas.bind(self.oop.btn_pag, 'Registar a receção de pagamento\nreferente à remessa selecionada. (⌘R)')        
+
 
     def liga_depositar_chq(self):
         """
@@ -489,6 +491,7 @@ class Callbacks():
         """
         self.oop.btn_pag.config(text=" ⏬", command=self.chq_depositado)
         self.oop.label_pag.config(text="Depositar")
+        self.oop.dicas.bind(self.oop.btn_pag, 'Marcar como depositado o pagamento\nreferente à remessa selecionada. (⌘B)')
 
 
     def liga_restaurar(self):
@@ -497,6 +500,7 @@ class Callbacks():
         """
         self.oop.btn_del.config(text=" ⤴️")
         self.oop.label_del.config(text="Restaurar")
+        self.oop.dicas.bind(self.oop.btn_del, 'Recuperar a remessa relecionada,\ndisponibilizando-a novamente na lista\nde remessas ativas.')
 
 
     def liga_arquivar(self):
@@ -505,6 +509,7 @@ class Callbacks():
         """
         self.oop.btn_del.config(text="❌")
         self.oop.label_del.config(text="Arquivar")
+        self.oop.dicas.bind(self.oop.btn_del, 'Arquivar a remessa selecionada. (⌘⌫)')
 
 
     def ativar_arquivo(self, *event):
@@ -1116,8 +1121,8 @@ class Callbacks():
                     if (linha_atual_expedidor != num_remessas-1):  # Se é a primeira remessa do mês, mostra a data.
                         str_data = "\n\n  " + str_ano + "-" + str_mes + "\n" + 60*"-"+ "\n"
                         texto_completo_expedidor += str_data
-                        print("adicionada data para:", str_ano, str_mes)
-                        print("linha_atual:", linha_atual)
+                        #print("adicionada data para:", str_ano, str_mes)
+                        #print("linha_atual:", linha_atual)
                         remessas_mes, vols_mes, remessas_cobr_mes, remessas_mult_mes, remessas_simples_mes, vols_mult_mes = 0, 0, 0, 0, 0, 0
 
 
@@ -1223,11 +1228,7 @@ class Callbacks():
 
 
     def del_remessa(self):
-        self.oop.status_txt.set("Nenhuma remessa selecionada!")
         remessa = self.oop.remessa_selecionada
-        if self.oop.estado_tabela == "Arquivo":
-            db_restaurar_remessa(remessa)
-            self.oop.status_txt.set("Todas as remessas nesta vista já se encontram arquivadas! A remessa {} foi restaurada.".format(remessa))
         if self.oop.pesquisa_visible:
             if self.oop.arquivado:
                 db_restaurar_remessa(remessa)
@@ -1235,11 +1236,15 @@ class Callbacks():
             else:
                 db_del_remessa(remessa)
                 self.oop.status_txt.set("A arquivar remessa {}".format(remessa))
+        elif self.oop.estado_tabela == "Arquivo":
+            db_restaurar_remessa(remessa)
+            self.oop.status_txt.set("Todas as remessas nesta vista já se encontram arquivadas! A remessa {} foi restaurada.".format(remessa))
         else:
             db_del_remessa(remessa)
             self.oop.status_txt.set("A arquivar remessa {}".format(remessa))
         criar_mini_db()
         self.oop.remessa_selecionada = ""
+        self.oop.status_txt.set("Nenhuma remessa selecionada!")
         self.regressar_tabela()
 
 
@@ -1263,7 +1268,6 @@ class Callbacks():
         curItem = self.oop.tree.focus()
         tree_linha = self.oop.tree.item(curItem)
 
-        print("VAR:", tree_linha)
         tree_obj_num = tree_linha["values"][3]
 
         tree_destin = tree_linha["values"][1]
@@ -1292,6 +1296,7 @@ class Callbacks():
         if valor_cobr == "0":
             self.oop.btn_pag.state(["disabled"])
             self.oop.label_pag.config(text="(S/Cobrança)")
+            self.oop.dicas.bind(self.oop.btn_pag, 'Remessa sem valor de cobrança.')
         else:
             self.oop.btn_pag.state(["!disabled"])
             if chq_recebido == "N/D":

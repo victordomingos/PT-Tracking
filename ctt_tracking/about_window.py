@@ -143,7 +143,7 @@ class about_window:
 
 
         #---------- FUNDO -----------
-        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n\n\n© 2016 Victor Domingos")
+        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n\n\n© 2017 Victor Domingos")
         license_lbl = ttk.Label(pframe_fundo, font=copyfont, text=__license__)
 
 

@@ -232,7 +232,7 @@ class Janela:
 
         ttk.Label(self.bottomframe, text="Expedidor").grid(column=0, row=3, sticky=W+E)
         self.combo_expedidor = ttk.Combobox(self.bottomframe, width=13, values=(" - Selecionar -",)+EXPEDIDORES, state="readonly")
-        self.combo_expedidor.current(0)
+        self.combo_expedidor.current(INDEX_EXPEDIDOR_PREDEFINIDO)
         self.combo_expedidor.grid(column=0, row=4, sticky=W+E)
         self.combo_expedidor.bind("<<ComboboxSelected>>", self.callBacks.expedir_select)
         self.combo_expedidor.bind("<Return>", self.callBacks.add_remessa)

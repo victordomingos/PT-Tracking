@@ -1318,7 +1318,7 @@ class Callbacks():
             self.oop.text_input_vols.delete(0, END)
             self.oop.text_input_rma.delete(0, END)
             self.oop.text_input_obs.delete(0, END)
-            self.oop.combo_expedidor.current(0)
+            self.oop.combo_expedidor.current(INDEX_EXPEDIDOR_PREDEFINIDO)
         except Exception as e:
             print("This is a very misterious clear_text() error! But what kind of program would be happy without having some kind of bug like this?...")
             print("Exception:", e)

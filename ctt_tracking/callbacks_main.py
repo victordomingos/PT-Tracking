@@ -26,10 +26,9 @@ import requests
 # Os outros módulos que compõem esta aplicação
 from misc_operations import *
 from global_setup import *
+from global_setup import __app_name__
 from extra_tk_classes import *
 from about_window import *
-
-__app_name__ = "PT Tracking 2017"
 
 
 class Callbacks():
@@ -1502,12 +1501,15 @@ class Callbacks():
 
         self.oop.btn_fechar_det = ttk.Button(self.oop.detalheframe, text="Fechar", command=self.hide_detalhe)
         self.oop.btn_fechar_det.grid(column=6, row=1, sticky='we')
+        self.oop.dicas.bind(self.oop.btn_fechar_det, 'Fechar este painel e regressar à tabela\nde remessas. (⎋)')
 
         self.oop.btn_arquivar_det = ttk.Button(self.oop.detalheframe, text="Arquivar", command=self.del_remessa)
         self.oop.btn_arquivar_det.grid(column=6, row=2, sticky='we')
+        self.oop.dicas.bind(self.oop.btn_arquivar_det, 'Arquivar a remessa selecionada. (⌘⌫)')
 
         self.oop.btn_ver_web = ttk.Button(self.oop.detalheframe, text="Ver na Web", command=self.abrir_url_browser)
         self.oop.btn_ver_web.grid(column=6, row=3, sticky='we')
+        self.oop.dicas.bind(self.oop.btn_ver_web, 'Abrir o browser e consultar o estado\ndeste envio no site da transportadora. (⌘O)')
 
         for col in range(6):
             self.oop.detalheframe.columnconfigure(col, weight=1)

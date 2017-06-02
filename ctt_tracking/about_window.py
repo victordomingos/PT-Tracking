@@ -19,7 +19,7 @@ __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 __version__ = "v.2.10"
-__email__ = "web@victordomingos.com"
+__email__ = "victor@promais.com"
 __status__ = "Beta"
 
 

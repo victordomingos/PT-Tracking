@@ -29,10 +29,10 @@ from string import ascii_letters
 # Os outros módulos que compõem esta aplicação
 from misc_operations import *
 from global_setup import *
+from global_setup import __app_name__
 from extra_tk_classes import *
 from callbacks_main import Callbacks
 
-__app_name__ = "PT Tracking 2017"
 __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
@@ -203,6 +203,7 @@ class Janela:
         self.text_input_obj = ttk.Entry(self.bottomframe, width=13)
         self.text_input_obj.grid(column=0, row=2, sticky=W+E)
         self.text_input_obj.bind("<Return>", lambda x: self.text_input_destin.focus_set())
+        self.dicas.bind(self.text_input_obj, 'Introduza aqui o número de objeto\nindicado na guia da transportadora.')
 
         ttk.Label(self.bottomframe, text="Destinatário").grid(column=1, columnspan=2,  row=1, sticky=W)
         self.text_input_destin = AutocompleteEntry(self.bottomframe, width=30)
@@ -214,16 +215,20 @@ class Janela:
         self.text_input_cobr = ttk.Entry(self.bottomframe, width=10)
         self.text_input_cobr.grid(column=3, row=2)
         self.text_input_cobr.bind("<Return>", self.callBacks.add_remessa)
+        self.dicas.bind(self.text_input_cobr, 'Introduza aqui o montante a cobrar,\ncaso se trate de um envio à cobrança.')
 
         ttk.Label(self.bottomframe, text="Prazo").grid(column=4, row=1, sticky=W)
         self.text_input_dias = ttk.Entry(self.bottomframe, width=6)
         self.text_input_dias.grid(column=4, row=2, sticky=W)
         self.text_input_dias.bind("<Return>", self.callBacks.add_remessa)
+        self.dicas.bind(self.text_input_dias, 'Indique o número de dias para pagamento\n(p. ex.: "PP", "30", "15").')
 
         ttk.Label(self.bottomframe, text="Vols.").grid(column=5, row=1, sticky=W+E)
         self.text_input_vols = ttk.Entry(self.bottomframe, width=6)
         self.text_input_vols.grid(column=5, row=2, sticky=W+E)
         self.text_input_vols.bind("<Return>", self.callBacks.add_remessa)
+        self.dicas.bind(self.text_input_vols, 'Especifique o número de volumes\nque compõem esta remessa.')
+
 
         ttk.Label(self.bottomframe, text="Expedidor").grid(column=0, row=3, sticky=W+E)
         self.combo_expedidor = ttk.Combobox(self.bottomframe, width=13, values=(" - Selecionar -",)+EXPEDIDORES, state="readonly")
@@ -231,22 +236,27 @@ class Janela:
         self.combo_expedidor.grid(column=0, row=4, sticky=W+E)
         self.combo_expedidor.bind("<<ComboboxSelected>>", self.callBacks.expedir_select)
         self.combo_expedidor.bind("<Return>", self.callBacks.add_remessa)
+        self.dicas.bind(self.combo_expedidor, 'Clique aqui para selecionar o expedidor\nresponsável por este envio.')
 
         ttk.Label(self.bottomframe, text="Observações").grid(column=1, columnspan=4, row=3, sticky=W)
         self.text_input_obs = ttk.Entry(self.bottomframe, width=40)
         self.text_input_obs.grid(column=1, columnspan=4, row=4, sticky=W+E)
+        self.dicas.bind(self.text_input_obs, 'Utilize este campo para registar quaisquer informações\nadicionais que possam vir a ser úteis para pesquisa ou\nreferência futura (nº de encomenda, tipo de mercadoria,\npessoa de contacto no local de destino, etc.).')
 
         ttk.Label(self.bottomframe, text="RMA").grid(column=5, row=3, sticky=W+E)
         self.text_input_rma = ttk.Entry(self.bottomframe, width=13)
         self.text_input_rma.grid(column=5, row=4, sticky=W+E)
+        self.dicas.bind(self.text_input_rma, 'Caso este envio seja referente a um processo de garantia,\npode ser indicado aqui o nº de processo, NAR ou RMA do\nfornecedor ou centro técnico.')
 
         self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default="active", style="Active.TButton", command=lambda: self.callBacks.add_remessa)
         self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
+        self.dicas.bind(self.btn_adicionar, 'Adicionar à base de dados a informação introduzida. (⏎)')
         self.btn_adicionar.bind("<Return>", self.callBacks.add_remessa)
         self.btn_adicionar.bind('<Button-1>', self.callBacks.add_remessa)
 
         self.btn_cancelar = ttk.Button(self.bottomframe, text="Cancelar", command=self.callBacks.hide_entryform)
         self.btn_cancelar.grid(column=6, row=4, sticky=W+E)
+        self.dicas.bind(self.btn_cancelar, 'Fechar este painel, sem guardar,\ne regressar à tabela de remessas. (⎋)')
 
         for col in range(6):
             self.bottomframe.columnconfigure(col, weight=1)

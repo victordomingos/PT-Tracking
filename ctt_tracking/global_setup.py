@@ -8,6 +8,8 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 
 import os.path
 
+__app_name__ = "PT Tracking 2017"
+
 
 # ----- Configurar estas variáveis antes de usar -----
 DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/db_PT_Tracking_pre_alpha.sqlite"

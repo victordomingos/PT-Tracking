@@ -4,13 +4,14 @@ Histórico de versões:
 ====================
 
 
-v.2.10 beta - ?
+v.2.10 beta - 02/06/2017
  * Adicionada especificação explícita para usar a codificação de texto UTF-8
    no terminal (em alguns ambientes de execução o programa poderia não correr
    caso outra codificação de texto estivesse em uso).
  * Reorganização do código (separação das callbacks da classe principal para
    um módulo separado).
  * Adicionadas dicas aos botões e campo de pesquisa da barras de ferramentas.
+ * Adicionadas dicas a alguns campos do formulário de introdução de dados.
  * Corrigido um bug que podia impedir a abertura do painel de detalhes.
  * Corrigido um bug que poderia impedir o restauro de remessas arquivadas.
 

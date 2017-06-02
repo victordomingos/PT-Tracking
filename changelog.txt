@@ -12,6 +12,7 @@ v.2.10 beta - 02/06/2017
    um módulo separado).
  * Adicionadas dicas aos botões e campo de pesquisa da barras de ferramentas.
  * Adicionadas dicas a alguns campos do formulário de introdução de dados.
+ * Adicionadas dicas aos botões do painel de detalhes de remessa.
  * Corrigido um bug que podia impedir a abertura do painel de detalhes.
  * Corrigido um bug que poderia impedir o restauro de remessas arquivadas.
 

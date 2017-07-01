@@ -15,6 +15,7 @@ __app_name__ = "PT Tracking 2017"
 DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/db_PT_Tracking_pre_alpha.sqlite"
 MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite"
 ZIP_MINI_DB_PATH = os.path.expanduser("~") + "/Dropbox/PT-Tracking/mini_db_PT_Tracking.sqlite.zip"
+DEBUG_PATH = os.path.expanduser("~") + "/Dropbox/PTT-tracking/debug.txt"
 
 # Personalizar com o nome da empresa.
 EMPRESA = "Nome da Empresa" 

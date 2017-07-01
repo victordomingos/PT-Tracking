@@ -3,7 +3,10 @@
 Histórico de versões:
 ====================
 
+v.2.11 beta - 01/07/2017
+ * Adicionado registo de acesso no arranque da aplicação.
 
+---
 v.2.10 beta - 02/06/2017
  * Adicionada especificação explícita para usar a codificação de texto UTF-8
    no terminal (em alguns ambientes de execução o programa poderia não correr

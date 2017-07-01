@@ -21,6 +21,7 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 import sys
 import io
 import Pmw
+import logging
 import tkinter.font
 from tkinter import *
 from tkinter import ttk
@@ -32,6 +33,8 @@ from global_setup import *
 from global_setup import __app_name__
 from extra_tk_classes import *
 from callbacks_main import Callbacks
+from logging_stuff import *
+
 
 __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2017 Victor Domingos"

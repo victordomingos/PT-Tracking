@@ -289,6 +289,15 @@ class Janela:
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+    logging.basicConfig(filename=DEBUG_PATH,
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+
+    user_info = basicLogInfo()
+    logging.debug(user_info.generate_log_string())
+
     print("\nBem-vindo(a) ao {} ({})!\n".format(__app_name__, __version__))
     print(__copyright__)
     print(__license__)

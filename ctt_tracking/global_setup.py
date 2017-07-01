@@ -43,3 +43,6 @@ INDEX_EXPEDIDOR_PREDEFINIDO = "0"
 
 update_delay = 3600000  # Tempo de espera entre as atualizações automáticas (ms)
 NUNCA = 0
+
+OUR_LOCATIONS = {'0.0.0.0': 'LocationName',
+                }

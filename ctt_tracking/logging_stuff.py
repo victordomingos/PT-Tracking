@@ -8,6 +8,7 @@ logging purposes.
 Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 """
 
+import logging
 from requests import get
 from datetime import datetime
 from socket import gethostname

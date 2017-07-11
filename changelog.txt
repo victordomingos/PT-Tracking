@@ -3,8 +3,10 @@
 Histórico de versões:
 ====================
 
-v.2.11 beta - 01/07/2017
+v.2.11 beta - 11/07/2017
  * Adicionado registo de acesso no arranque da aplicação.
+ * Corrigido um bug, introduzido na versão 2.10, que impedia a correta
+   ordenação da tabela ao clicar nos cabeçalhos das colunas.
 
 ---
 v.2.10 beta - 02/06/2017

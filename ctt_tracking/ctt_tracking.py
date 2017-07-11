@@ -306,8 +306,6 @@ if __name__ == "__main__":
     print(__license__)
     print("\n\n - A inicializar base de dados principal.")
     db_inicializar()
-    print(" - A atualizar base de dados para dispositivos móveis.")
-    criar_mini_db()
     print(" - A preparar interface gráfica.")
     print("   * ", end="", flush=True)
     root = Tk()

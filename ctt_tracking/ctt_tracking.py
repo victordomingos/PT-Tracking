@@ -181,7 +181,7 @@ class Janela:
         # Ordenar por coluna ao clicar no respetivo cabeçalho
         for col in self.tree['columns']:
             self.tree.heading(col, text=col.title(), 
-                              command=lambda c=col: self.sortBy(self.tree, c, 0))
+                              command=lambda c=col: self.callBacks.sortBy(self.tree, c, 0))
 
         # Barra de deslocação para a tabela
         self.tree.grid(column=0, row=0, sticky=N+W+E, in_=self.mainframe)

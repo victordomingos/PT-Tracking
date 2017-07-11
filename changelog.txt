@@ -3,6 +3,13 @@
 Histórico de versões:
 ====================
 
+
+v.2.12 beta - 
+ * Retirado do arranque da aplicação o procedimento de criação de base de
+   dados para dispositivos móveis (estava a ser criado, de qualquer modo,
+   cerca de 2 segundos após a inicialização da interface gráfica).
+
+—--
 v.2.11 beta - 11/07/2017
  * Adicionado registo de acesso no arranque da aplicação.
  * Corrigido um bug, introduzido na versão 2.10, que impedia a correta

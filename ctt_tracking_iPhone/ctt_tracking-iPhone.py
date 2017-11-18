@@ -21,8 +21,7 @@ UINotificationFeedbackGenerator = ObjCClass('UINotificationFeedbackGenerator')
 UISelectionFeedbackGenerator = ObjCClass('UISelectionFeedbackGenerator')
 
 
-# É necessário corrigir esta linha antes de usar:
-os.chdir('/private/var/mobile/Containers/Shared/AppGroup/5E22383E-122A-4BBE-9677-E4A0EF63E7C3/Pythonista3/Documents/ctt_tracking_ios')
+os.chdir(os.path.expanduser('~/Documents/ctt_tracking_ios'))
 
 
 __app_name__ = "PT-Tracking para iOS"

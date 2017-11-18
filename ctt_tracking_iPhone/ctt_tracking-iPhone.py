@@ -14,11 +14,15 @@ import os
 import string
 import runpy
 
-from objc_util import *  
+# Definir como True em dispositivos com Taptic Engine
+USETAPTIC = False
 
-UIImpactFeedbackGenerator = ObjCClass('UIImpactFeedbackGenerator')  
-UINotificationFeedbackGenerator = ObjCClass('UINotificationFeedbackGenerator')  
-UISelectionFeedbackGenerator = ObjCClass('UISelectionFeedbackGenerator')
+if USETAPTIC:
+    from objc_util import *  
+
+    UIImpactFeedbackGenerator = ObjCClass('UIImpactFeedbackGenerator')  
+    UINotificationFeedbackGenerator = ObjCClass('UINotificationFeedbackGenerator')  
+    UISelectionFeedbackGenerator = ObjCClass('UISelectionFeedbackGenerator')
 
 
 os.chdir(os.path.expanduser('~/Documents/ctt_tracking_ios'))
@@ -39,6 +43,7 @@ DB_DOWNLOAD_MODULE = 'download_db_file'
 EMPRESA = "Empresa"
 
 EXPEDIDORES = ("Empresa 1", "Empresa 2")
+
 DB_PATH = MINI_DB_FILE
 
 # Aumentar para usar num ecrã maior ou em modo horizontal
@@ -75,14 +80,16 @@ class tableSource (object):
         
         self.db_atualizar_tudo()
         
-        #self.impactgeneratorlight = UIImpactFeedbackGenerator.alloc().initWithStyle_(0)
-        #self.impactgeneratormedium = UIImpactFeedbackGenerator.alloc().initWithStyle_(1)
-        #self.impactgeneratorheavy = UIImpactFeedbackGenerator.alloc().initWithStyle_(2)
-        self.notificationgenerator = UINotificationFeedbackGenerator.alloc().init()
-        self.selectiongenerator = UISelectionFeedbackGenerator.alloc().init()
+        if USETAPTIC:
+        
+            #self.impactgeneratorlight = UIImpactFeedbackGenerator.alloc().initWithStyle_(0)
+            #self.impactgeneratormedium = UIImpactFeedbackGenerator.alloc().initWithStyle_(1)
+            #self.impactgeneratorheavy = UIImpactFeedbackGenerator.alloc().initWithStyle_(2)
+            self.notificationgenerator = UINotificationFeedbackGenerator.alloc().init()
+            self.selectiongenerator = UISelectionFeedbackGenerator.alloc().init()
         
         
-        #self.impactgeneratorlight.impactOccurred()
+            #self.impactgeneratorlight.impactOccurred()
 
     def tableview_number_of_rows(self, tv, s):
         return len(self.data)
@@ -116,7 +123,9 @@ class tableSource (object):
 
     def tableview_did_select(self, tableview, section, row):
         value = self.data[row]
-        self.selectiongenerator.selectionChanged()
+        
+        if USETAPTIC:
+            self.selectiongenerator.selectionChanged()
     
     
     

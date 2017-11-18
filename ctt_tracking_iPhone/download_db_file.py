@@ -8,7 +8,7 @@ from zipfile import ZipFile
 import io
 import gzip
 
-os.chdir('/private/var/mobile/Containers/Shared/AppGroup/5E22383E-122A-4BBE-9677-E4A0EF63E7C3/Pythonista3/Documents/ctt_tracking_ios')
+os.chdir(os.path.expanduser('~/Documents/ctt_tracking_ios'))
 
 # personalizar a linha seguinte com o URL da mini_db no Dropbox, por exemplo:
 ZIP_MINI_DB = 'mini_db_PT_Tracking.sqlite.zip?raw=1'

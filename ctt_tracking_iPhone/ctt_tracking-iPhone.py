@@ -81,7 +81,6 @@ class tableSource (object):
         self.db_atualizar_tudo()
         
         if USETAPTIC:
-        
             #self.impactgeneratorlight = UIImpactFeedbackGenerator.alloc().initWithStyle_(0)
             #self.impactgeneratormedium = UIImpactFeedbackGenerator.alloc().initWithStyle_(1)
             #self.impactgeneratorheavy = UIImpactFeedbackGenerator.alloc().initWithStyle_(2)

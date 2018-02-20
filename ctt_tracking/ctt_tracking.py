@@ -15,7 +15,7 @@ Desenvolvido em Python 3 (com muitas noites passadas em claro) por:
         Victor Domingos
         http://victordomingos.com
 
-© 2017 Victor Domingos
+© 2018 Victor Domingos
 Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 """
 import sys
@@ -37,7 +37,7 @@ from logging_stuff import *
 
 
 __author__ = "Victor Domingos"
-__copyright__ = "Copyright 2017 Victor Domingos"
+__copyright__ = "Copyright 2018 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 __version__ = "v.2.12"
 __email__ = "web@victordomingos.com"
@@ -52,7 +52,7 @@ class Janela:
         master.title(__app_name__+ " - "+ __version__)
         master.minsize(width=800, height=600)
         master.maxsize(width=1024, height=2000)
-        
+
         self.callBacks = Callbacks(self)  # Vai buscar ao módulo externo os métodos que pertenciam a esta classe.
 
         self.dicas = Pmw.Balloon(self.master, label_background='#f6f6f6',
@@ -62,7 +62,7 @@ class Janela:
                                               yoffset=18,
                                               xoffset=-2,
                                               initwait=1300)
-        
+
         self.janela_thanks = None
         self.janela_about = None
         self.status_txt = StringVar()
@@ -100,7 +100,7 @@ class Janela:
         self.btn_arquivo.grid(column=3, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivo").grid(column=3, row=1)
         self.dicas.bind(self.btn_arquivo, 'Mostrar apenas as remessas arquivadas. (⌘3)')
-        
+
         self.btn_pag = ttk.Button(self.topframe, text=" ✅", width=4, command=self.callBacks.pag_recebido)
         self.btn_pag.grid(column=7, row=0)
         self.label_pag = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Cheque Rec.")
@@ -112,7 +112,7 @@ class Janela:
         self.label_del = ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Arquivar")
         self.label_del.grid(column=8, row=1)
         self.dicas.bind(self.btn_del, 'Arquivar a remessa selecionada. (⌘⌫)')
-        
+
         self.btn_hoje = ttk.Button(self.topframe, text=" ⚡", width=4, command=self.callBacks.copiar_hoje)
         self.btn_hoje.grid(column=9, row=0)
         ttk.Label(self.topframe, font=self.btnFont, foreground=self.btnTxtColor, text="Hoje").grid(column=9, row=1)
@@ -180,7 +180,7 @@ class Janela:
 
         # Ordenar por coluna ao clicar no respetivo cabeçalho
         for col in self.tree['columns']:
-            self.tree.heading(col, text=col.title(), 
+            self.tree.heading(col, text=col.title(),
                               command=lambda c=col: self.callBacks.sortBy(self.tree, c, 0))
 
         # Barra de deslocação para a tabela

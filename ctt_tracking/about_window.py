@@ -14,9 +14,8 @@ from tkinter import ttk
 from global_setup import *
 from global_setup import __app_name__
 
-
 __author__ = "Victor Domingos"
-__copyright__ = "Copyright 2017 Victor Domingos"
+__copyright__ = "Copyright 2018 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 __version__ = "v.2.12"
 __email__ = "web@victordomingos.com"
@@ -73,6 +72,7 @@ class about_window:
         vols = 0
         destinos = 0
         cobr = 0.0
+        db_filesize = os.path.getsize(os.path.expanduser(DB_PATH)) >> 10
 
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
@@ -140,10 +140,13 @@ class about_window:
         stats_lbl2 = ttk.Label(pframe_meio, text=str_vols)
         stats_lbl3 = ttk.Label(pframe_meio, text=str_destinos)
         stats_lbl4 = ttk.Label(pframe_meio, text=str_cobr)
+        
+        lbl_filesize = ttk.Label(pframe_meio, 
+            text=f"Tamanho atual da base de dados: {db_filesize/1024:.1f}MB")
 
 
         #---------- FUNDO -----------
-        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n\n\n© 2017 Victor Domingos")
+        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n© 2017 Victor Domingos")
         license_lbl = ttk.Label(pframe_fundo, font=copyfont, text=__license__)
 
 
@@ -155,12 +158,13 @@ class about_window:
         stats_lbl2.pack()
         stats_lbl3.pack()
         stats_lbl4.pack()
+        lbl_filesize.pack()
 
         copyright_lbl.pack()
         license_lbl.pack()
         pframe_topo.pack(side=TOP)
         pframe_meio.pack(side=TOP)
-        pframe_fundo.pack(side=TOP)
+        pframe_fundo.pack(side=BOTTOM)
 
         pframe_topo.focus()
 

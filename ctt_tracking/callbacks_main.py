@@ -653,7 +653,7 @@ class Callbacks():
         add_destin = self.oop.text_input_destin.get().strip()
         add_cobr = self.oop.text_input_cobr.get().strip()
         add_dias = self.oop.text_input_dias.get().strip()
-        add_vols = self.oop.text_input_vols.get().strip()
+        add_vols = str(self.oop.spin_vols.get())
         add_rma = self.oop.text_input_rma.get().strip()
         add_obs = self.oop.text_input_obs.get().strip()
         add_expedidor = self.oop.combo_expedidor.get()
@@ -685,7 +685,7 @@ class Callbacks():
                 num = int(add_vols)
             except ValueError:
                 self.oop.status_txt.set("O número de volumes deve ser um valor inteiro.")
-                self.oop.text_input_vols.focus_set()
+                self.oop.spin_vols.focus_set()
                 return
 
         if (add_expedidor not in EXPEDIDORES):
@@ -718,7 +718,7 @@ class Callbacks():
                     num_dias = int(add_dias)
                 except ValueError:
                     self.oop.status_txt.set("""O prazo de pagamento deve ser introduzido como "PP" (pronto pagamento) ou indicando o número de dias.""")
-                    self.oop.text_input_vols.focus_set()
+                    self.oop.spin_vols.focus_set()
                     return
         data_dep = calcular_data_deposito(agora, num_dias)
         # reunir variáveis que faltam #TODO
@@ -747,7 +747,7 @@ class Callbacks():
                                                         ))
         except sqlite3.IntegrityError:
                 self.oop.status_txt.set("""O objeto com o nº indicado já existe na base de dados.""")
-                self.oop.text_input_vols.focus_set()
+                self.oop.spin_vols.focus_set()
                 return
         conn.commit()
         c.close()
@@ -1315,7 +1315,8 @@ class Callbacks():
             self.oop.text_input_destin.delete(0, END)
             self.oop.text_input_cobr.delete(0, END)
             self.oop.text_input_dias.delete(0, END)
-            self.oop.text_input_vols.delete(0, END)
+            self.oop.spin_vols.delete(0, END)
+            self.oop.spin_vols.insert(0, "1")
             self.oop.text_input_rma.delete(0, END)
             self.oop.text_input_obs.delete(0, END)
             self.oop.combo_expedidor.current(INDEX_EXPEDIDOR_PREDEFINIDO)

@@ -227,10 +227,10 @@ class Janela:
         self.dicas.bind(self.text_input_dias, 'Indique o número de dias para pagamento\n(p. ex.: "PP", "30", "15").')
 
         ttk.Label(self.bottomframe, text="Vols.").grid(column=5, row=1, sticky=W+E)
-        self.text_input_vols = ttk.Entry(self.bottomframe, width=6)
-        self.text_input_vols.grid(column=5, row=2, sticky=W+E)
-        self.text_input_vols.bind("<Return>", self.callBacks.add_remessa)
-        self.dicas.bind(self.text_input_vols, 'Especifique o número de volumes\nque compõem esta remessa.')
+        self.spin_vols = Spinbox(self.bottomframe, from_=1, to=100, format='%.0f', width=6)
+        self.spin_vols.grid(column=5, row=2, sticky=W+E)
+        self.spin_vols.bind("<Return>", self.callBacks.add_remessa)
+        self.dicas.bind(self.spin_vols, 'Especifique o número de volumes\nque compõem esta remessa.')
 
 
         ttk.Label(self.bottomframe, text="Expedidor").grid(column=0, row=3, sticky=W+E)
@@ -252,13 +252,13 @@ class Janela:
         self.dicas.bind(self.text_input_rma, 'Caso este envio seja referente a um processo de garantia,\npode ser indicado aqui o nº de processo, NAR ou RMA do\nfornecedor ou centro técnico.')
 
         self.btn_adicionar = ttk.Button(self.bottomframe, text="Adicionar", default="active", style="Active.TButton", command=lambda: self.callBacks.add_remessa)
-        self.btn_adicionar.grid(column=6, row=2, sticky=W+E)
+        self.btn_adicionar.grid(column=6, row=2, sticky=W+E, padx="15 0")
         self.dicas.bind(self.btn_adicionar, 'Adicionar à base de dados a informação introduzida. (⏎)')
         self.btn_adicionar.bind("<Return>", self.callBacks.add_remessa)
         self.btn_adicionar.bind('<Button-1>', self.callBacks.add_remessa)
 
         self.btn_cancelar = ttk.Button(self.bottomframe, text="Cancelar", command=self.callBacks.hide_entryform)
-        self.btn_cancelar.grid(column=6, row=4, sticky=W+E)
+        self.btn_cancelar.grid(column=6, row=4, sticky=W+E, padx="15 0")
         self.dicas.bind(self.btn_cancelar, 'Fechar este painel, sem guardar,\ne regressar à tabela de remessas. (⎋)')
 
         for col in range(6):

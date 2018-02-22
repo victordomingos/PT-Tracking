@@ -8,20 +8,11 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 import re
 import sqlite3
 import os
-import sys
-import io
 import webbrowser
 import shlex
-import tkinter as tk
+
 from tkinter import ttk, messagebox
 from datetime import time, datetime, timedelta
-from string import ascii_letters
-
-# Nota: Os seguintes módulos requerem instalação prévia
-from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
-from bleach import clean
-from bs4 import BeautifulSoup
-import requests
 
 # Os outros módulos que compõem esta aplicação
 from misc_operations import *
@@ -1395,6 +1386,7 @@ class Callbacks():
         self.hide_entryform()
         self.atualizar_remessa_selecionada()
 
+        print("Remessa selecionada:", self.oop.remessa_selecionada)
         db_update_estado(self.oop.remessa_selecionada)
 
         conn = sqlite3.connect(DB_PATH)
@@ -1406,10 +1398,12 @@ class Callbacks():
         detalhes = c.fetchone()
         conn.commit()
         c.close()
+        print(f"Detalhes ({type(detalhes)}):")
+        print(detalhes)
 
         #db_id = detalhes[0]              # INTEGER PRIMARY KEY AUTOINCREMENT,
         destin = detalhes[1]             # TEXT NOT NULL,
-        estado = detalhes[2]             # TEXT,
+        #estado = detalhes[2]             # TEXT,
         obj_num = detalhes[3]            # TEXT UNIQUE NOT NULL,
 
         dt_data_exp = datetime.strptime(detalhes[4], "%Y-%m-%d %H:%M:%S.%f")
@@ -1441,13 +1435,19 @@ class Callbacks():
         else:
             data_depositado = detalhes[13]
 
-        dt_data_ult_alt = datetime.strptime(detalhes[15], "%Y-%m-%d %H:%M:%S.%f")
-        data_ult_alt = datetime.strftime(dt_data_ult_alt,"%Y-%m-%d")
+        #dt_data_ult_alt = datetime.strptime(detalhes[15], "%Y-%m-%d %H:%M:%S.%f")
+        #data_ult_alt = datetime.strftime(dt_data_ult_alt,"%Y-%m-%d")
 
-        dt_data_ult_verif = datetime.strptime(detalhes[14], "%Y-%m-%d %H:%M:%S.%f")
-        data_ult_verif = datetime.strftime(dt_data_ult_verif,"%Y-%m-%d")
+        #dt_data_ult_verif = datetime.strptime(detalhes[14], "%Y-%m-%d %H:%M:%S.%f")
+        #data_ult_verif = datetime.strftime(dt_data_ult_verif,"%Y-%m-%d")
 
-        estado_detalhado = detalhes[16]  # TEXT
+        try:
+            estado_detalhado = json.loads(detalhes[16])  # json
+            use_terminaltables = False
+        except Exception as e:
+            print(e)
+            estado_detalhado = json.detalhes[16]  # TEXT (old terminaltables version)
+            use_terminaltables = True
 
         self.oop.dfl_remessa = ttk.Label(self.oop.detalheframe, style="BW.TLabel", text="Detalhes da Remessa:  {}\n".format(destin))
 
@@ -1489,16 +1489,73 @@ class Callbacks():
             self.oop.dfl_data_depositar.grid(column=2, row=2, sticky='w')
             self.oop.dfl_data_depositado.grid(column=2, row=3, sticky='w')
 
-        ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky='we')
+        #ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky='we')
 
-        self.oop.S = AutoScrollbar(self.oop.detalheframe)
-        self.oop.T = Text(self.oop.detalheframe, height=19, width=100)
-        self.oop.S.grid(column=7, row=8, sticky='wns')
-        self.oop.T.grid(column=0, columnspan=7, row=8,sticky='wne')
-        self.oop.S.config(command=self.oop.T.yview)
-        self.oop.T.config(yscrollcommand=self.oop.S.set)
-        self.oop.T.insert(END, estado_detalhado, 'tabela')
-        self.oop.T.tag_config('tabela', foreground='#476042', justify="center", font=('Andale Mono', 12, 'bold'))
+        if use_terminaltables:
+            self.oop.S = AutoScrollbar(self.oop.detalheframe)
+            self.oop.T = Text(self.oop.detalheframe, height=19, width=100)
+            self.oop.S.grid(column=7, row=8, sticky='wns')
+            self.oop.T.grid(column=0, columnspan=7, row=8,sticky='wne')
+            self.oop.S.config(command=self.oop.T.yview)
+            self.oop.T.config(yscrollcommand=self.oop.S.set)
+            self.oop.T.insert(END, estado_detalhado, 'tabela')
+            self.oop.T.tag_config('tabela', foreground='#476042', justify="center", font=('Andale Mono', 12, 'bold'))
+        else:
+            if len(estado_detalhado) < 15:
+                altura = len(estado_detalhado)-3
+            else:
+                altura = 15
+            self.oop.tree_detalhe = ttk.Treeview(self.oop.detalheframe, height=altura, selectmode='browse')
+            self.oop.tree_detalhe['columns'] = ('Data/Hora', 'Estado', 'Motivo', 'Local', 'Recetor')
+            self.oop.tree_detalhe.column('#0', anchor=W, minwidth=0, stretch=0, width=0)
+            self.oop.tree_detalhe.column('Data/Hora', anchor=E, minwidth=100, stretch=1, width=120)
+            self.oop.tree_detalhe.column('Estado', minwidth=100, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Motivo', minwidth=110, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Local', anchor=E, minwidth=100, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Recetor', anchor=E, minwidth=100, stretch=1, width=120)
+
+            #  Ordenar por coluna ao clicar no respetivo cabeçalho
+            for col in self.oop.tree_detalhe['columns']:
+                self.oop.tree_detalhe.heading(col, text=col.title(),
+                                  command=lambda c=col: self.sortBy(self.oop.tree_detalhe, c, 0))
+            
+            # Barra de deslocação para a tabela
+            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky=N+W+E, in_=self.oop.detalheframe)
+            vsb = AutoScrollbar(orient="vertical", command=self.oop.tree_detalhe.yview)
+            self.oop.tree_detalhe.configure(yscrollcommand=vsb.set)
+            vsb.grid(column=1, row=0, sticky=N+S, in_=self.oop.detalheframe)
+            self.oop.detalheframe.grid_columnconfigure(0, weight=1)
+            self.oop.detalheframe.grid_rowconfigure(0, weight=1)
+            ttk.Style().configure('Treeview', font=("Lucida Grande", 11), foreground="grey22", rowheight=20)
+            ttk.Style().configure('Treeview.Heading', font=("Lucida Grande", 11), foreground="grey22")
+
+            ttk.Style().configure( '.', relief = 'flat', borderwidth = 0) # Aplicar visual limpo a todas as classes
+
+            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady=20)
+
+
+            print("------\n", estado_detalhado, type(estado_detalhado), "\n::::::::")
+            for l in estado_detalhado[2:]:
+                print("LINE:", l)
+                if len(l) == 0:
+                    continue
+                if len(l) > 1:
+                    data = l[0]
+                    estado = l[1]
+                    motivo = l[2]
+                    local = l[3]
+                    recetor = l[4]
+                else:
+                    data = l[0]
+                    estado = ""
+                    motivo = ""
+                    local = ""
+                    recetor = ""
+
+                self.oop.tree_detalhe.insert("", 1, text ="Texto_nao_sei_que",
+                                                values=(data, estado, motivo, local, recetor))
+            self.oop.tree_detalhe.update()
+
 
         self.oop.btn_fechar_det = ttk.Button(self.oop.detalheframe, text="Fechar", command=self.hide_detalhe)
         self.oop.btn_fechar_det.grid(column=6, row=1, sticky='we')

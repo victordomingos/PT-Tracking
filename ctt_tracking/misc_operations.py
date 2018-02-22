@@ -9,15 +9,20 @@ Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 import sqlite3
 import webbrowser
 import sys
-from datetime import datetime, timedelta
-import requests
-from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
-from bleach import clean
-from bs4 import BeautifulSoup
-import textwrap as tw
 import os, errno
 import zipfile
+import json
+import textwrap as tw
+
+from datetime import datetime, timedelta
+from typing import List
 from os.path import basename
+from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
+
+import requests
+
+from bleach import clean
+from bs4 import BeautifulSoup
 
 from global_setup import *
 
@@ -208,7 +213,7 @@ def db_update_estado(remessa):
     global DB_PATH
     estado = verificar_estado(remessa)
     if estado != "- N/A -":
-        estado_detalhado = obter_estado_detalhado(remessa)
+        estado_detalhado = json.dumps(obter_estado_detalhado2(remessa))
         agora = datetime.now()
         try:
             conn = sqlite3.connect(DB_PATH)
@@ -228,8 +233,6 @@ def db_del_remessa(remessa):
     Arquivar uma remessa ativa a partir do seu nº de objeto
     """
     global DB_PATH
-    estado = verificar_estado(remessa)
-    estado_detalhado = obter_estado_detalhado(remessa)
     agora = datetime.now()
 
     try:
@@ -282,6 +285,8 @@ def db_atualizar_tudo():
                  FROM remessas 
                  WHERE arquivado = 0 AND estado != "Objeto entregue" AND data_ult_verif <= datetime("now", "-5 minutes");''')
     datas = c.fetchall()
+    #print("DEBUG TODO - datas:")  #TODO
+    #print(datas)  # TODO
 
     for linha in remessas:
         remessa = linha[0]
@@ -332,7 +337,6 @@ def obter_estado_detalhado(remessa):
         #print("data:")
         #print(data)
         del data[2]  # apagar linha em branco
-        table = data
         tabela_estado_detalhado = AsciiTable(table)  # Substituir por algo + GUI-friendly #TODO
         tabela_estado_detalhado.padding_left = 0
         tabela_estado_detalhado.padding_right = 0
@@ -341,8 +345,32 @@ def obter_estado_detalhado(remessa):
     except Exception as erro:
         print("obter_estado_detalhado({}) - Não foi possível obter estado detalhado a partir da web.".format(estado))
         print(erro)
-    return(estado)
+    return estado
 
+
+def obter_estado_detalhado2(remessa: str) -> List[str]:
+    """ Verificar extrado de tracking detalhado do objeto nos CTT
+    Ex: obter_estado_detalhado("EA746000000PT")
+    """
+    tracking_code = remessa
+    ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
+    estado = "- N/A -"
+    data = []
+    try:
+        html = requests.get(ctt_url).content
+        soup = BeautifulSoup(html, "html5lib")
+        rows = soup.select("table #details_0 td table")[0]
+        cols = [th.text.strip() for th in rows.select("thead tr th")]
+        data = [[txt_wrap(td.text.strip(), 30) for td in tr.select("td")] for tr in rows.select("tr")]
+        data.insert(0, cols)
+        del data[2]  # apagar linha em branco
+        print(data)
+    except Exception as erro:
+        print("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a partir da web.".format(estado))
+        print(erro)
+        print("Obter_estado_detalhado (from 2 exception):")
+        print(obter_estado_detalhado(remessa))
+    return data
 
 
 def txt_wrap(texto, chars):

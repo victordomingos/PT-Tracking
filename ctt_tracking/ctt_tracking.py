@@ -269,15 +269,11 @@ class Janela:
 
         # Painel de informação (entre a tabela e o formulário de entrada de dados) ------------------------------------
         self.statusframe = ttk.Frame(root, padding="5 5 5 5")
-        #self.progress_bar = ttk.Progressbar(self.statusframe, orient ="horizontal", length = 50, mode ="determinate")
-        #self.progress_bar["maximum"] = 100
-        #self.progress_bar["value"] = 50
-
-        #self.progress_bar.place(in_=self.statusframe, relx=1,  y=100, anchor="se", relwidth=1, bordermode="outside")
 
         self.statusFont = tkinter.font.Font(family="Lucida Grande", size=11)
         self.statusbar = ttk.Label(self.statusframe, font=self.statusFont, foreground=self.btnTxtColor, textvariable=self.status_txt)
         self.statusbar.pack(side=BOTTOM)
+
 
         # Ativar layout -----------------------------------------------------------------------------------------------
         self.callBacks.gerar_menu()

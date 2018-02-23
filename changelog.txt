@@ -5,21 +5,22 @@ Histórico de versões:
 
 
 v.2.12 beta - 23/02/2018
- * Retirado do arranque da aplicação o procedimento de criação de base de
-   dados para dispositivos móveis (estava a ser criado, de qualquer modo,
-   cerca de 2 segundos após a inicialização da interface gráfica).
  * No painel de detalhes, o estado detalhado (histórico) é agora apresentado
    utilizando uma ttk.Treeview em vez de uma tabela em modo de texto
    (terminaltables). Para manter compatibilidade com os registos antigos na
    base de dados, o modo de texto continua a ser empregue nos casos em que um
    dado registo tenha sido gravado usando tabelas em modo de texto e já não
    seja possível obter um estado atualizado a partir da internet.
+ * Adicionada barra de progresso durante as operações mais demoradas de E/S.
  * No formulário de introdução de nova remessa, o número de volumes utiliza
    agora uma Spinbox (nota: provisório, a aguardar uma previsível
    disponibilização de versão ttk com o Python 3.7).
- * Foi removida a limitação ao tamanho máximo da janela (pode ser maximizada
-   e colocada em modo de ecrã inteiro).
- * Adicionada barra de progresso durante as operações mais demoradas de E/S.
+ * Retirado do arranque da aplicação o procedimento de criação de base de
+   dados para dispositivos móveis (estava a ser criado, de qualquer modo,
+   cerca de 2 segundos após a inicialização da interface gráfica).
+ * Foi removida a limitação ao tamanho máximo da janela (pode agora ser
+   maximizada e colocada em modo de ecrã inteiro).
+ * Pequenos ajustes visuais.
 
 —--
 v.2.11 beta - 11/07/2017

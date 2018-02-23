@@ -17,7 +17,7 @@ import textwrap as tw
 from datetime import datetime, timedelta
 from typing import List
 from os.path import basename
-from terminaltables import AsciiTable # a remover e substituir por uma visualização gráfica
+from terminaltables import AsciiTable
 
 import requests
 
@@ -144,9 +144,7 @@ def criar_mini_db():
             
     except Exception as erro:
         print("criar_mini_db():", erro)
-    
-    
-    
+
     
     print('Creating archive...')
     try:
@@ -212,7 +210,7 @@ def db_update_estado(remessa):
     """
     global DB_PATH
     estado = verificar_estado(remessa)
-    if estado != "- N/A -":
+    if estado not in ("- N/A -", "Objeto não encontrado"):
         estado_detalhado = json.dumps(obter_estado_detalhado2(remessa))
         agora = datetime.now()
         try:
@@ -225,7 +223,7 @@ def db_update_estado(remessa):
             conn.commit()
             c.close()
         except:
-            print(" - Não foi possível atualizar na base de dados o estado da remessa {}!".format(remessa))
+            logging.debug(" - Não foi possível atualizar na base de dados o estado da remessa {}!".format(remessa))
 
 
 def db_del_remessa(remessa):
@@ -284,14 +282,14 @@ def db_atualizar_tudo():
     c.execute('''SELECT data_exp 
                  FROM remessas 
                  WHERE arquivado = 0 AND estado != "Objeto entregue" AND data_ult_verif <= datetime("now", "-5 minutes");''')
-    datas = c.fetchall()
+    #datas = c.fetchall()
     #print("DEBUG TODO - datas:")  #TODO
     #print(datas)  # TODO
 
     for linha in remessas:
         remessa = linha[0]
         estado = verificar_estado(remessa)
-        if estado != "- N/A -":
+        if estado not in ("- N/A -", "Objeto não encontrado"):
             db_update_estado(remessa)
     conn.commit()
     c.close()
@@ -315,9 +313,10 @@ def verificar_estado(tracking_code):
             estado = clean(estado, tags=[], strip=True).strip()
     except:
         print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
-    return(estado)
+    print("ESTADO:", estado, type(estado), len(estado))
+    return estado
 
-
+'''
 def obter_estado_detalhado(remessa):
     """ Verificar extrado de tracking detalhado do objeto nos CTT
     Ex: obter_estado_detalhado("EA746000000PT")
@@ -346,6 +345,7 @@ def obter_estado_detalhado(remessa):
         print("obter_estado_detalhado({}) - Não foi possível obter estado detalhado a partir da web.".format(estado))
         print(erro)
     return estado
+'''
 
 
 def obter_estado_detalhado2(remessa: str) -> List[str]:
@@ -364,12 +364,10 @@ def obter_estado_detalhado2(remessa: str) -> List[str]:
         data = [[txt_wrap(td.text.strip(), 30) for td in tr.select("td")] for tr in rows.select("tr")]
         data.insert(0, cols)
         del data[2]  # apagar linha em branco
-        print(data)
     except Exception as erro:
-        print("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a partir da web.".format(estado))
-        print(erro)
-        print("Obter_estado_detalhado (from 2 exception):")
-        print(obter_estado_detalhado(remessa))
+        logging.debug("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a "
+                      "partir da web.".format(estado))
+        logging.debug(str(erro))
     return data
 
 
@@ -421,4 +419,13 @@ def calcular_data_deposito(data_expedicao2, dias1):
         d2 = data_expedicao2 + timedelta(dias1)
         return d2
 
+
+def comeca_por_dia_da_semana(texto: str) -> bool:
+    dias_da_semana = ("segunda-feira", "terça-feira", "quarta-feira",
+                      "quinta-feira", "sexta-feira", "sábado", "domingo")
+
+    if texto.lower().split(", ")[0] in dias_da_semana:
+        return True
+    else:
+        return False
 

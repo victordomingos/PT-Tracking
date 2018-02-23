@@ -94,3 +94,71 @@ class AutoScrollbar(Scrollbar):
     def place(self, **kw):
         raise TclError("cannot use place with this widget")
 
+
+class NPKProgressBar(ttk.Frame):
+    """ Simple Progress Bar class with custom methods.
+    """
+    def __init__(self, master):
+        ttk.Frame.__init__(self, master)
+        self.master = master
+        self.progress_value = 0
+
+        self.progress_bar = ttk.Progressbar(self,
+                                            length=100,
+                                            mode='indeterminate')
+
+        self.place(in_=self.master, relx=1, rely=1, y=-10, anchor='e')
+
+
+    def show_progress(self, max_value=100, value=0, length=100, mode='indeterminate'):
+        """ Display a progress bar in the right side of the status bar. It
+            can accept a different maximum value, if needed. Mode must be
+            either "determinate" (it will display a real progress bar that
+            can be updated), or "indeterminate" (it will display a simple
+            progress bar that does not show a specific value.
+        """
+        self.progress_reset()
+        self.progress_bar['mode'] = mode
+        if length:
+            self.progress_bar['length'] = length
+        if mode == 'indeterminate':
+            self.progress_bar.start()
+        else:
+            self.progress_bar['maximum'] = max_value
+            self.progress_update(value)
+
+        self.progress_bar.pack(side='right', padx="0 14")
+        self.progress_bar.update()
+        self.place(in_=self.master, relx=1, rely=1, y=-6, x=10, anchor='e')
+        self.master.update()
+
+    def _hide_progress(self):
+        """ Do the actual hiding of the progress bar. """
+        self.progress_bar.stop()
+        self.place_forget()
+        self.progress_reset()
+
+    def hide_progress(self, last_update=None):
+        """ Reset the progress bar and hide it. Optionaly, it can show
+            momentaneously a final value, by providing a value to the
+            last_update argument.
+        """
+        if last_update:
+            self.progress_update(last_update)
+            self.after(300, self._hide_progress)
+        else:
+            self._hide_progress()
+
+    def progress_update(self, value):
+        """ Make the progress bar advance by indicating its new value. """
+        if value > self.progress_value:
+            self.progress_value = value
+            self.progress_bar['value'] = self.progress_value
+            self.progress_bar.update()
+            self.progress_bar.after(150, lambda: self.progress_update(self.progress_value+1))
+
+    def progress_reset(self):
+        """ Make the progress bar go back to zero. """
+        self.progress_value = 0
+        self.progress_bar['value'] = 0
+        self.progress_bar.update()

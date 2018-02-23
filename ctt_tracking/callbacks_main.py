@@ -10,6 +10,7 @@ import sqlite3
 import os
 import webbrowser
 import shlex
+import logging
 
 from tkinter import ttk, messagebox
 from datetime import time, datetime, timedelta
@@ -29,7 +30,6 @@ class Callbacks():
     def expedir_select(self, event):
         self.oop.combo_expedidor.selection_clear()
 
-
     def atualizacao_periodica(self):
         """ Atualiza automaticamente de forma periódica a informação com o
             estado atual das remessas ativas. Caso a interface não esteja
@@ -41,27 +41,30 @@ class Callbacks():
 
         agora = datetime.now()
         agora_hora = agora.time()
+
         if time(9,30) <= agora_hora <= time(20,00):
             self.oop.updates +=1
-
-            print("atualizacao_periodica() em curso... ", datetime.now().time(), "-", self.oop.updates)
+            self.oop.progressbar.show_progress(value=20, mode="determinate")
+            logging.debug("atualizacao_periodica() em curso... -" + str(self.oop.updates))
             s_status = "A obter estados atualizados para as remessas em curso."
             self.oop.status_txt.set(s_status)
             db_atualizar_tudo()
+            self.oop.progressbar.progress_update(60)
             criar_mini_db()
-
+            self.oop.progressbar.progress_update(80)
             s_status = "Atualização completa!"
             self.oop.status_txt.set(s_status)
 
             # apenas atualizar a tabela com os novos dados, caso não esteja em curso uma operação do utilizador:
             if (not self.oop.detalhe_visible) and (not self.oop.entryform_visible) and (not self.oop.pesquisa_visible):
                 self.regressar_tabela()
-
+            self.oop.progressbar.hide_progress(last_update=100)
             # Agendar nova atualização apenas até ser atingido o seguinte limite:
             if self.oop.updates <= 900:
                 self.oop.mainframe.after(update_delay, self.atualizacao_periodica)
+
         else:
-            print("atualizacao_periodica(): Fora do horário de serviço. Atualização adiada.", agora_hora)
+            logging.debug("atualizacao_periodica(): Fora do horário de serviço. Atualização adiada.")
 
     def nada(self, *event):
         """ # Hacking moment: Uma função que não faz nada, para quando isso dá jeito...
@@ -102,10 +105,10 @@ class Callbacks():
                 self.oop.tree.focus(iid)
                 self.oop.contextMenu.post(event.x_root, event.y_root)
                 #print("popupMenu(): x,y = ", event.x_root, event.y_root)
-            else:
-                print("popupMenu(): wrong values for event - x=0, y=0")
+            #else:
+            #    print("popupMenu(): wrong values for event - x=0, y=0")
         else:
-            print("popupMenu(): Else - No code here yet! (mouse not over item)")
+            #print("popupMenu(): Else - No code here yet! (mouse not over item)")
             # mouse pointer not over item
             # occurs when items do not fill frame
             # no action required
@@ -302,9 +305,12 @@ class Callbacks():
         self.oop.text_input_pesquisa.delete(0, END)
 
         if self.oop.updates:
+            self.oop.progressbar.show_progress(value=20, mode="determinate")
             db_atualizar_tudo()
+            self.oop.progressbar.progress_update(60)
             criar_mini_db()
             self.oop.updates += 1
+            self.oop.progressbar.hide_progress(last_update=100)
 
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
         c = conn.cursor()
@@ -1104,8 +1110,9 @@ class Callbacks():
                         resumo_mes = resumo_mes + txt_mes_remessas + txt_mes_num_vols + txt_mes_simples + txt_mes_multiplos + txt_mes_num_cobr + "\n\n"
                         texto_completo_expedidor += resumo_mes
 
-                    else:
-                        print("nem é a primeira remessa do mês, nem chegou o fim do mês!", linha_atual, linha_atual_expedidor, num_remessas)
+                    #else:
+                    #    print("nem é a primeira remessa do mês, nem chegou o fim do mês!",
+                    # linha_atual, linha_atual_expedidor, num_remessas)
 
                     linha_atual = 0
                     if (linha_atual_expedidor != num_remessas-1):  # Se é a primeira remessa do mês, mostra a data.
@@ -1312,8 +1319,8 @@ class Callbacks():
             self.oop.text_input_obs.delete(0, END)
             self.oop.combo_expedidor.current(INDEX_EXPEDIDOR_PREDEFINIDO)
         except Exception as e:
-            print("This is a very misterious clear_text() error! But what kind of program would be happy without having some kind of bug like this?...")
-            print("Exception:", e)
+            logging.debug("This is a very misterious clear_text() error! But what kind of program would be happy without having some kind of bug like this?...")
+            logging.debug("Exception: "+ str(e))
 
 
     def show_entryform(self, *event):
@@ -1363,7 +1370,7 @@ class Callbacks():
         try:
             tree_obj_num = tree_linha["values"][3]
         except Exception as e:
-            print("self.atualizar_remessa_selecionada() > Exception:", e)
+            logging.debug("self.atualizar_remessa_selecionada() > Exception:" +str(e))
             self.oop.remessa_selecionada = ""
             messagebox.showwarning("", "Nenhuma remessa selecionada.")
             self.oop.master.focus_force()
@@ -1386,7 +1393,7 @@ class Callbacks():
         self.hide_entryform()
         self.atualizar_remessa_selecionada()
 
-        print("Remessa selecionada:", self.oop.remessa_selecionada)
+        logging.debug("Remessa selecionada: " + str(self.oop.remessa_selecionada))
         db_update_estado(self.oop.remessa_selecionada)
 
         conn = sqlite3.connect(DB_PATH)
@@ -1398,8 +1405,8 @@ class Callbacks():
         detalhes = c.fetchone()
         conn.commit()
         c.close()
-        print(f"Detalhes ({type(detalhes)}):")
-        print(detalhes)
+        logging.debug((f"Detalhes ({type(detalhes)}):"))
+        logging.debug(detalhes)
 
         #db_id = detalhes[0]              # INTEGER PRIMARY KEY AUTOINCREMENT,
         destin = detalhes[1]             # TEXT NOT NULL,
@@ -1445,8 +1452,8 @@ class Callbacks():
             estado_detalhado = json.loads(detalhes[16])  # json
             use_terminaltables = False
         except Exception as e:
-            print(e)
-            estado_detalhado = json.detalhes[16]  # TEXT (old terminaltables version)
+            logging.debug(e)
+            estado_detalhado = detalhes[16]  # TEXT (old terminaltables version)
             use_terminaltables = True
 
         self.oop.dfl_remessa = ttk.Label(self.oop.detalheframe, style="BW.TLabel", text="Detalhes da Remessa:  {}\n".format(destin))
@@ -1489,9 +1496,9 @@ class Callbacks():
             self.oop.dfl_data_depositar.grid(column=2, row=2, sticky='w')
             self.oop.dfl_data_depositado.grid(column=2, row=3, sticky='w')
 
-        #ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky='we')
 
         if use_terminaltables:
+            ttk.Separator(self.oop.detalheframe).grid(column=0, row=7, pady=14, padx=3, columnspan=7, sticky='we')
             self.oop.S = AutoScrollbar(self.oop.detalheframe)
             self.oop.T = Text(self.oop.detalheframe, height=19, width=100)
             self.oop.S.grid(column=7, row=8, sticky='wns')
@@ -1501,18 +1508,20 @@ class Callbacks():
             self.oop.T.insert(END, estado_detalhado, 'tabela')
             self.oop.T.tag_config('tabela', foreground='#476042', justify="center", font=('Andale Mono', 12, 'bold'))
         else:
-            if len(estado_detalhado) < 15:
-                altura = len(estado_detalhado)-3
+            linhas = len(estado_detalhado) - estado_detalhado.count([])
+
+            if linhas < 15:
+                altura = linhas
             else:
                 altura = 15
             self.oop.tree_detalhe = ttk.Treeview(self.oop.detalheframe, height=altura, selectmode='browse')
-            self.oop.tree_detalhe['columns'] = ('Data/Hora', 'Estado', 'Motivo', 'Local', 'Recetor')
+            self.oop.tree_detalhe['columns'] = ('Hora', 'Estado', 'Motivo', 'Local', 'Recetor')
             self.oop.tree_detalhe.column('#0', anchor=W, minwidth=0, stretch=0, width=0)
-            self.oop.tree_detalhe.column('Data/Hora', anchor=E, minwidth=100, stretch=1, width=120)
-            self.oop.tree_detalhe.column('Estado', minwidth=100, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Hora', anchor=E, minwidth=105, stretch=0, width=105)
+            self.oop.tree_detalhe.column('Estado', minwidth=120, stretch=1, width=130)
             self.oop.tree_detalhe.column('Motivo', minwidth=110, stretch=1, width=130)
-            self.oop.tree_detalhe.column('Local', anchor=E, minwidth=100, stretch=1, width=130)
-            self.oop.tree_detalhe.column('Recetor', anchor=E, minwidth=100, stretch=1, width=120)
+            self.oop.tree_detalhe.column('Local', minwidth=100, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Recetor', minwidth=100, stretch=1, width=120)
 
             #  Ordenar por coluna ao clicar no respetivo cabeçalho
             for col in self.oop.tree_detalhe['columns']:
@@ -1520,41 +1529,52 @@ class Callbacks():
                                   command=lambda c=col: self.sortBy(self.oop.tree_detalhe, c, 0))
             
             # Barra de deslocação para a tabela
-            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky=N+W+E, in_=self.oop.detalheframe)
+            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky=N+W+E,
+                                       in_=self.oop.detalheframe, padx=10, pady="20 0")
             vsb = AutoScrollbar(orient="vertical", command=self.oop.tree_detalhe.yview)
             self.oop.tree_detalhe.configure(yscrollcommand=vsb.set)
             vsb.grid(column=1, row=0, sticky=N+S, in_=self.oop.detalheframe)
             self.oop.detalheframe.grid_columnconfigure(0, weight=1)
             self.oop.detalheframe.grid_rowconfigure(0, weight=1)
             ttk.Style().configure('Treeview', font=("Lucida Grande", 11), foreground="grey22", rowheight=20)
-            ttk.Style().configure('Treeview.Heading', font=("Lucida Grande", 11), foreground="grey22")
-
+            ttk.Style().configure('Treeview.Heading', font=("Lucida Grande", 11),
+                                  foreground="grey22")
             ttk.Style().configure( '.', relief = 'flat', borderwidth = 0) # Aplicar visual limpo a todas as classes
 
-            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady=20)
+            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady="20 0")
 
-
-            print("------\n", estado_detalhado, type(estado_detalhado), "\n::::::::")
+            tag=""
             for l in estado_detalhado[2:]:
-                print("LINE:", l)
                 if len(l) == 0:
                     continue
                 if len(l) > 1:
-                    data = l[0]
+                    hora = l[0]
                     estado = l[1]
                     motivo = l[2]
                     local = l[3]
                     recetor = l[4]
+                    tag = ""
                 else:
-                    data = l[0]
-                    estado = ""
+                    if comeca_por_dia_da_semana(l[0]):
+                        dia_da_semana, data_extenso = l[0].replace("\n", " ").split(", ")
+                        hora = dia_da_semana.capitalize()
+                        estado = data_extenso
+                        tag = "data"
+                    else:
+                        hora = ""
+                        estado = ""
+                        tag=""
                     motivo = ""
                     local = ""
                     recetor = ""
 
-                self.oop.tree_detalhe.insert("", 1, text ="Texto_nao_sei_que",
-                                                values=(data, estado, motivo, local, recetor))
-            self.oop.tree_detalhe.update()
+                self.oop.tree_detalhe.insert("", 1, text ="Texto_nao_sei_que", tag=tag,
+                                             values=(hora, estado, motivo, local, recetor))
+
+            self.oop.tree_detalhe.tag_configure('data', background="#CCDDFF", font=("Lucida "
+                                                                                    "Grande Bold",
+                                                                                    12))
+            self.oop.tree_detalhe.update_idletasks()
 
 
         self.oop.btn_fechar_det = ttk.Button(self.oop.detalheframe, text="Fechar", command=self.hide_detalhe)

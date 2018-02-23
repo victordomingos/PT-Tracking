@@ -146,7 +146,7 @@ class about_window:
 
 
         #---------- FUNDO -----------
-        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n© 2017 Victor Domingos")
+        copyright_lbl = ttk.Label(pframe_fundo, font=copyfont, text="\n© 2018 Victor Domingos")
         license_lbl = ttk.Label(pframe_fundo, font=copyfont, text=__license__)
 
 
@@ -169,7 +169,6 @@ class about_window:
         pframe_topo.focus()
 
         popupRoot.mainloop()
-
 
 
 def thanks(*event):

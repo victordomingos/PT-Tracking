@@ -51,7 +51,7 @@ class Janela:
         self.master.createcommand('exit', save_and_exit)
         master.title(__app_name__+ " - "+ __version__)
         master.minsize(width=800, height=600)
-        master.maxsize(width=1024, height=2000)
+        #master.maxsize(width=1024, height=2000)
 
         self.callBacks = Callbacks(self)  # Vai buscar ao módulo externo os métodos que pertenciam a esta classe.
 
@@ -269,6 +269,7 @@ class Janela:
 
         # Painel de informação (entre a tabela e o formulário de entrada de dados) ------------------------------------
         self.statusframe = ttk.Frame(root, padding="5 5 5 5")
+        self.progressbar = NPKProgressBar(self.statusframe)
 
         self.statusFont = tkinter.font.Font(family="Lucida Grande", size=11)
         self.statusbar = ttk.Label(self.statusframe, font=self.statusFont, foreground=self.btnTxtColor, textvariable=self.status_txt)
@@ -308,7 +309,7 @@ if __name__ == "__main__":
     print("* ", end="", flush=True)
     root.configure(background='grey95')
     print("* ", end="", flush=True)
-    root.geometry('860x650')
+    root.geometry('860x650+0+0')
     print("* ", end="", flush=True)
     janela = Janela(root)
     print("*", end="", flush=True)

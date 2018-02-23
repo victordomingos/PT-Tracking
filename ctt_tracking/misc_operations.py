@@ -12,6 +12,7 @@ import sys
 import os, errno
 import zipfile
 import json
+import logging
 import textwrap as tw
 
 from datetime import datetime, timedelta
@@ -28,7 +29,6 @@ from global_setup import *
 
 
 def db_inicializar():
-    global DB_PATH
     print(" - A abrir base de dados...\n  ", DB_PATH)
     conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
     c = conn.cursor()
@@ -62,9 +62,6 @@ def db_inicializar():
 
 
 def criar_mini_db():
-    global MINI_DB_PATH
-    global DB_PATH
-
     try:
         os.remove(MINI_DB_PATH) # Apagar ficheiro antigo.
     except OSError as excepcao: 
@@ -173,7 +170,6 @@ def criar_mini_db():
 
 # Adicionar uma nova coluna à base de dados (p/ expansão de funcionalidade)
 def db_add_coluna():
-    global DB_PATH
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""ALTER TABLE remessas 
@@ -184,7 +180,6 @@ def db_add_coluna():
 
 def db_get_destinatarios():
     """ Obter lista de destinatários já utilizados anteriormente a partir da base de dados """
-    global DB_PATH
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
@@ -208,7 +203,6 @@ def db_update_estado(remessa):
     Atualizar na base de dados estado e estado detalhado para uma remessa
     a partir do seu nº de objeto
     """
-    global DB_PATH
     estado = verificar_estado(remessa)
     if estado not in ("- N/A -", "Objeto não encontrado"):
         estado_detalhado = json.dumps(obter_estado_detalhado2(remessa))
@@ -222,15 +216,16 @@ def db_update_estado(remessa):
                          (estado, estado_detalhado, agora, remessa))
             conn.commit()
             c.close()
+            return estado
         except:
             logging.debug(" - Não foi possível atualizar na base de dados o estado da remessa {}!".format(remessa))
+            return "Informação indisponível"
 
 
 def db_del_remessa(remessa):
     """
     Arquivar uma remessa ativa a partir do seu nº de objeto
     """
-    global DB_PATH
     agora = datetime.now()
 
     try:
@@ -250,7 +245,6 @@ def db_restaurar_remessa(remessa):
     """
     Reativar uma remessa arquivada a partir do seu nº de objeto
     """
-    global DB_PATH
     agora = datetime.now()
 
     try:
@@ -271,7 +265,6 @@ def db_atualizar_tudo():
     Atualizar na base de dados o número de dias desde expedição e os estados
     de todas as remessas ativas (i.e. não arquivadas), exceto as já entregues.
     """
-    global DB_PATH
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -279,13 +272,6 @@ def db_atualizar_tudo():
                  FROM remessas 
                  WHERE arquivado = 0 AND estado != "Objeto entregue" AND data_ult_verif <= datetime("now", "-5 minutes");''')
     remessas = c.fetchall()
-    c.execute('''SELECT data_exp 
-                 FROM remessas 
-                 WHERE arquivado = 0 AND estado != "Objeto entregue" AND data_ult_verif <= datetime("now", "-5 minutes");''')
-    #datas = c.fetchall()
-    #print("DEBUG TODO - datas:")  #TODO
-    #print(datas)  # TODO
-
     for linha in remessas:
         remessa = linha[0]
         estado = verificar_estado(remessa)
@@ -313,39 +299,7 @@ def verificar_estado(tracking_code):
             estado = clean(estado, tags=[], strip=True).strip()
     except:
         print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
-    print("ESTADO:", estado, type(estado), len(estado))
     return estado
-
-'''
-def obter_estado_detalhado(remessa):
-    """ Verificar extrado de tracking detalhado do objeto nos CTT
-    Ex: obter_estado_detalhado("EA746000000PT")
-    """
-    tracking_code = remessa
-    ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
-    estado = "- N/A -"
-    try:
-        html = requests.get(ctt_url).content
-        soup = BeautifulSoup(html, "html5lib")
-        rows = soup.select("table #details_0 td table")[0]
-        #print("rows: ", rows)
-        cols = [th.text.strip() for th in rows.select("thead tr th")]
-        #print("------\ncols: ", cols)
-        data = [[txt_wrap(td.text.strip(), 30) for td in tr.select("td")] for tr in rows.select("tr")]
-        data.insert(0, cols)
-        #print("data:")
-        #print(data)
-        del data[2]  # apagar linha em branco
-        tabela_estado_detalhado = AsciiTable(table)  # Substituir por algo + GUI-friendly #TODO
-        tabela_estado_detalhado.padding_left = 0
-        tabela_estado_detalhado.padding_right = 0
-        #print(tabela_estado_detalhado.table)
-        estado = tabela_estado_detalhado.table
-    except Exception as erro:
-        print("obter_estado_detalhado({}) - Não foi possível obter estado detalhado a partir da web.".format(estado))
-        print(erro)
-    return estado
-'''
 
 
 def obter_estado_detalhado2(remessa: str) -> List[str]:
@@ -360,15 +314,16 @@ def obter_estado_detalhado2(remessa: str) -> List[str]:
         html = requests.get(ctt_url).content
         soup = BeautifulSoup(html, "html5lib")
         rows = soup.select("table #details_0 td table")[0]
-        cols = [th.text.strip() for th in rows.select("thead tr th")]
-        data = [[txt_wrap(td.text.strip(), 30) for td in tr.select("td")] for tr in rows.select("tr")]
-        data.insert(0, cols)
-        del data[2]  # apagar linha em branco
+        # cols = [th.text.strip() for th in rows.select("thead tr th")]
+        tabela = [[td.text.strip() for td in tr.select("td")]
+                for tr in rows.select("tr")]
+        # tabela.insert(0, cols)  # Cabeçalho com o nome das colunas da tabela
+        tabela = [linha for linha in tabela if linha != []]  # Remover todas as linhas em branco
     except Exception as erro:
         logging.debug("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a "
                       "partir da web.".format(estado))
         logging.debug(str(erro))
-    return data
+    return tabela
 
 
 def txt_wrap(texto, chars):
@@ -377,7 +332,6 @@ def txt_wrap(texto, chars):
         return(wrapped_txt)
     else:
         return texto
-
 
 
 # Funções externas (globais à aplicação) ==============================================================================

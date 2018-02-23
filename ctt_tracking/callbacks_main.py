@@ -36,9 +36,7 @@ class Callbacks():
             em utilização, é atualizada também a informação no ecrã.
             A atualização só é efetuada no horário de expediente, com o
             objetivo de reduzir o número consultas ao servidor.
-        """
-        global update_delay
-
+        """        
         agora = datetime.now()
         agora_hora = agora.time()
 
@@ -59,6 +57,7 @@ class Callbacks():
             if (not self.oop.detalhe_visible) and (not self.oop.entryform_visible) and (not self.oop.pesquisa_visible):
                 self.regressar_tabela()
             self.oop.progressbar.hide_progress(last_update=100)
+            print(s_status)
             # Agendar nova atualização apenas até ser atingido o seguinte limite:
             if self.oop.updates <= 900:
                 self.oop.mainframe.after(update_delay, self.atualizacao_periodica)
@@ -275,7 +274,6 @@ class Callbacks():
         """
         Mostrar detalhes da remessa selecionada (após duplo-clique na linha correspondente)
         """
-        global DB_PATH
         self.hide_entryform()
         curItem = self.oop.tree.focus()
         tree_linha = self.oop.tree.item(curItem)
@@ -304,7 +302,7 @@ class Callbacks():
         self.hide_detalhe()
         self.oop.text_input_pesquisa.delete(0, END)
 
-        if self.oop.updates:
+        if self.oop.updates > 1 :
             self.oop.progressbar.show_progress(value=20, mode="determinate")
             db_atualizar_tudo()
             self.oop.progressbar.progress_update(60)
@@ -645,7 +643,6 @@ class Callbacks():
 
     # Verificar dados, formatar corretamente e adicionar à base de dados ----------------------------------------------
     def add_remessa(self, event):
-        global DB_PATH
         add_obj = self.oop.text_input_obj.get().strip()
         add_destin = self.oop.text_input_destin.get().strip()
         add_cobr = self.oop.text_input_cobr.get().strip()
@@ -748,20 +745,32 @@ class Callbacks():
                 return
         conn.commit()
         c.close()
-        self.oop.lista_destinatarios = db_get_destinatarios()
+        self.oop.lista_destinatarios = db_get_destinatarios()        
+        estado = db_update_estado(add_obj)
+        self.inserir_linha("0", add_destin, estado, add_obj, add_vols, add_cobr, "", str(data_dep.date()))
         criar_mini_db()
-
         remessa = "({}, {})".format(add_obj, add_destin)
         self.oop.status_txt.set("Nova remessa adicionada! {}".format(remessa))
         self.oop.text_input_obj.focus_set()
         self.clear_text()
 
+    def inserir_linha(self, dias, destinatario, estado, obj_num, vols, cobr, chq_rec, chq_depos):
+        self.oop.tree.insert("", "end",
+                                values=(dias,
+                                        destinatario,  # destin
+                                        estado,  # Estado
+                                        obj_num,  # Obj nº
+                                        str(vols),  # Nº de volumes
+                                        cobr,  # Cobrança
+                                        chq_rec,  # Data de recebimento de cheque
+                                        chq_depos,  #Data prevista de depósito
+                                        ))
+                                                
 
     def pag_recebido(self, *event):
         """
         Registar a receção de meio de pagamento (p.ex. cheque)
         """
-        global DB_PATH
         self.atualizar_remessa_selecionada()
 
         if self.oop.remessa_selecionada == "":
@@ -807,7 +816,6 @@ class Callbacks():
         """
         Registar a data aquando do depósito do cheque no banco e arquivar a remessa.
         """
-        global DB_PATH
         self.atualizar_remessa_selecionada()
 
         if self.oop.remessa_selecionada == "":
@@ -852,7 +860,6 @@ class Callbacks():
     def copiar_hoje(self, event=None):
         """ Gerar lista de envios de hoje, pré-formatada para copiar e enviar via email
         """
-        global DB_PATH
         objeto, destino, vols, cobr = "","","",""
 
         self.oop.btn_hoje.configure(state="disabled")
@@ -920,7 +927,6 @@ class Callbacks():
     def copiar_chq_hoje(self, event=None):
         """ Gerar lista de cheques depositados hoje, pré-formatada para copiar e enviar via email
         """
-        global DB_PATH
         objeto, destino, cobr = "","",""
 
         conn = sqlite3.connect(DB_PATH)
@@ -957,7 +963,6 @@ class Callbacks():
     def copiar_chq_por_depositar(self, event=None):
         """ Gerar lista de cheques ainda não depositados, pré-formatada para copiar e enviar via email
         """
-        global DB_PATH
         objeto, destino, cobr, data_depositar = "","","",""
 
         conn = sqlite3.connect(DB_PATH)
@@ -1001,7 +1006,6 @@ class Callbacks():
     def copiar_chq_nao_recebidos(self, event=None):
         """ Gerar lista de cheques ainda não recebidos, pré-formatada para copiar e enviar via email
         """
-        global DB_PATH
         objeto, destino, cobr, data_depositar = "","","",""
 
         conn = sqlite3.connect(DB_PATH)
@@ -1045,7 +1049,6 @@ class Callbacks():
     def copiar_lista_por_expedidor(self, event=None):
         """ Gerar lista de todos os cheques já depositados, pré-formatada para copiar e enviar via email
         """
-        global DB_PATH
         objeto, destino, cobr = "","",""
 
         texto_completo = ""
@@ -1191,7 +1194,6 @@ class Callbacks():
     def copiar_chq_depositados(self, event=None):
         """ Gerar lista de todos os objetos já expedidos, por ordem cronológica, agrupados por expedidor.
         """
-        global DB_PATH
         objeto, destino, cobr, data_depositado = "","","",""
 
         conn = sqlite3.connect(DB_PATH)
@@ -1259,7 +1261,6 @@ class Callbacks():
         """
         Obter remessa selecionada (após clique de rato na linha correspondente)
         """
-        global DB_PATH
         self.hide_entryform()
         self.hide_detalhe()
         curItem = self.oop.tree.focus()
@@ -1382,7 +1383,6 @@ class Callbacks():
 
 
     def mostrar_detalhe(self, *event):
-        global DB_PATH
         self.unbind_tree()
 
         if self.oop.detalhe_visible:
@@ -1410,7 +1410,7 @@ class Callbacks():
 
         #db_id = detalhes[0]              # INTEGER PRIMARY KEY AUTOINCREMENT,
         destin = detalhes[1]             # TEXT NOT NULL,
-        #estado = detalhes[2]             # TEXT,
+        estado = detalhes[2]             # TEXT,
         obj_num = detalhes[3]            # TEXT UNIQUE NOT NULL,
 
         dt_data_exp = datetime.strptime(detalhes[4], "%Y-%m-%d %H:%M:%S.%f")
@@ -1448,13 +1448,17 @@ class Callbacks():
         #dt_data_ult_verif = datetime.strptime(detalhes[14], "%Y-%m-%d %H:%M:%S.%f")
         #data_ult_verif = datetime.strftime(dt_data_ult_verif,"%Y-%m-%d")
 
-        try:
-            estado_detalhado = json.loads(detalhes[16])  # json
-            use_terminaltables = False
-        except Exception as e:
-            logging.debug(e)
-            estado_detalhado = detalhes[16]  # TEXT (old terminaltables version)
+        if estado == "Objeto não encontrado":
             use_terminaltables = True
+            estado_detalhado =  estado
+        else:
+            try:
+                estado_detalhado = json.loads(detalhes[16])  # json
+                use_terminaltables = False
+            except Exception as e:
+                logging.debug(e)
+                estado_detalhado = detalhes[16]  # TEXT (old terminaltables version)
+                use_terminaltables = True
 
         self.oop.dfl_remessa = ttk.Label(self.oop.detalheframe, style="BW.TLabel", text="Detalhes da Remessa:  {}\n".format(destin))
 
@@ -1513,29 +1517,28 @@ class Callbacks():
             if linhas < 15:
                 altura = linhas
             else:
-                altura = 15
+                altura = 16
             self.oop.tree_detalhe = ttk.Treeview(self.oop.detalheframe, height=altura, selectmode='browse')
             self.oop.tree_detalhe['columns'] = ('Hora', 'Estado', 'Motivo', 'Local', 'Recetor')
             self.oop.tree_detalhe.column('#0', anchor=W, minwidth=0, stretch=0, width=0)
             self.oop.tree_detalhe.column('Hora', anchor=E, minwidth=105, stretch=0, width=105)
-            self.oop.tree_detalhe.column('Estado', minwidth=120, stretch=1, width=130)
-            self.oop.tree_detalhe.column('Motivo', minwidth=110, stretch=1, width=130)
+            self.oop.tree_detalhe.column('Estado', minwidth=135, stretch=0, width=135)
+            self.oop.tree_detalhe.column('Motivo', minwidth=140, stretch=1, width=140)
             self.oop.tree_detalhe.column('Local', minwidth=100, stretch=1, width=130)
-            self.oop.tree_detalhe.column('Recetor', minwidth=100, stretch=1, width=120)
+            self.oop.tree_detalhe.column('Recetor', minwidth=60, stretch=1, width=60)
 
             #  Ordenar por coluna ao clicar no respetivo cabeçalho
             for col in self.oop.tree_detalhe['columns']:
-                self.oop.tree_detalhe.heading(col, text=col.title(),
-                                  command=lambda c=col: self.sortBy(self.oop.tree_detalhe, c, 0))
-            
+                self.oop.tree_detalhe.heading(col, text=col.title())
+
             # Barra de deslocação para a tabela
-            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky=N+W+E,
-                                       in_=self.oop.detalheframe, padx=10, pady="20 0")
-            vsb = AutoScrollbar(orient="vertical", command=self.oop.tree_detalhe.yview)
-            self.oop.tree_detalhe.configure(yscrollcommand=vsb.set)
-            vsb.grid(column=1, row=0, sticky=N+S, in_=self.oop.detalheframe)
-            self.oop.detalheframe.grid_columnconfigure(0, weight=1)
-            self.oop.detalheframe.grid_rowconfigure(0, weight=1)
+            #self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky=N+W+E,
+            #                           in_=self.oop.detalheframe, padx=10, pady="20 0")
+            #vsb = AutoScrollbar(orient="vertical", command=self.oop.tree_detalhe.yview)
+            #self.oop.tree_detalhe.configure(yscrollcommand=vsb.set)
+            #vsb.grid(column=8, row=0, sticky=N+S, in_=self.oop.detalheframe)
+            #self.oop.detalheframe.grid_columnconfigure(0, weight=1)
+            #self.oop.detalheframe.grid_rowconfigure(0, weight=1)
             ttk.Style().configure('Treeview', font=("Lucida Grande", 11), foreground="grey22", rowheight=20)
             ttk.Style().configure('Treeview.Heading', font=("Lucida Grande", 11),
                                   foreground="grey22")
@@ -1543,8 +1546,8 @@ class Callbacks():
 
             self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady="20 0")
 
-            tag=""
-            for l in estado_detalhado[2:]:
+            tag="etc"
+            for l in estado_detalhado:
                 if len(l) == 0:
                     continue
                 if len(l) > 1:
@@ -1553,7 +1556,7 @@ class Callbacks():
                     motivo = l[2]
                     local = l[3]
                     recetor = l[4]
-                    tag = ""
+                    tag = "etc"
                 else:
                     if comeca_por_dia_da_semana(l[0]):
                         dia_da_semana, data_extenso = l[0].replace("\n", " ").split(", ")
@@ -1563,17 +1566,21 @@ class Callbacks():
                     else:
                         hora = ""
                         estado = ""
-                        tag=""
+                        tag="etc"
                     motivo = ""
                     local = ""
                     recetor = ""
 
-                self.oop.tree_detalhe.insert("", 1, text ="Texto_nao_sei_que", tag=tag,
+                self.oop.tree_detalhe.insert("", "end", text ="Texto_nao_sei_que", tag=tag,
                                              values=(hora, estado, motivo, local, recetor))
 
-            self.oop.tree_detalhe.tag_configure('data', background="#CCDDFF", font=("Lucida "
+            self.oop.tree_detalhe.tag_configure('data', background="#FFE4C4", font=("Lucida "
                                                                                     "Grande Bold",
                                                                                     12))
+            self.oop.tree_detalhe.tag_configure('etc', background="#FFFFD7", font=("Lucida "
+                                                                                    "Grande",
+                                                                                    11))
+
             self.oop.tree_detalhe.update_idletasks()
 
 

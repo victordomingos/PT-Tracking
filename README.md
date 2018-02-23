@@ -3,6 +3,10 @@ Aplicação de base de dados para registo e acompanhamento de encomendas da CTT 
 
 ![captura de ecra 2017-04-6 as 18 43 44](https://cloud.githubusercontent.com/assets/18650184/24768034/13b5f4f4-1af9-11e7-8b8c-5ac8411e5469.png)
 
+
+![captura de ecra 2018-02-23 as 17 45 38](https://user-images.githubusercontent.com/18650184/36608350-785248f6-18c1-11e8-8a95-ef36b0cd10a6.png)
+
+
 ## Dependências
 
 Esta aplicação foi desenvolvida em Python 3, tkinter e sqlite3, com muitas noites passadas em claro :-) 

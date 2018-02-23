@@ -20,6 +20,8 @@ v.2.12 beta - 23/02/2018
    cerca de 2 segundos após a inicialização da interface gráfica).
  * Foi removida a limitação ao tamanho máximo da janela (pode agora ser
    maximizada e colocada em modo de ecrã inteiro).
+ * Ao adicionar uma nova remessa, ela agora já aparece de imediato visível na
+   lista de remessas, com o seu estado devidamente atualizado.
  * Pequenos ajustes visuais.
 
 —--

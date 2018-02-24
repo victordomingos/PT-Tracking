@@ -26,7 +26,7 @@ from about_window import *
 class Callbacks():
     def __init__(self, oop):
         self.oop = oop
-        
+
     def expedir_select(self, event):
         self.oop.combo_expedidor.selection_clear()
 
@@ -36,7 +36,7 @@ class Callbacks():
             em utilização, é atualizada também a informação no ecrã.
             A atualização só é efetuada no horário de expediente, com o
             objetivo de reduzir o número consultas ao servidor.
-        """        
+        """
         agora = datetime.now()
         agora_hora = agora.time()
 
@@ -476,7 +476,7 @@ class Callbacks():
         """
         self.oop.btn_pag.config(text=" ✅", command=self.pag_recebido)
         self.oop.label_pag.config(text="Cheque Rec.")
-        self.oop.dicas.bind(self.oop.btn_pag, 'Registar a receção de pagamento\nreferente à remessa selecionada. (⌘R)')        
+        self.oop.dicas.bind(self.oop.btn_pag, 'Registar a receção de pagamento\nreferente à remessa selecionada. (⌘R)')
 
 
     def liga_depositar_chq(self):
@@ -745,7 +745,7 @@ class Callbacks():
                 return
         conn.commit()
         c.close()
-        self.oop.lista_destinatarios = db_get_destinatarios()        
+        self.oop.lista_destinatarios = db_get_destinatarios()
         estado = db_update_estado(add_obj)
         self.inserir_linha("0", add_destin, estado, add_obj, add_vols, add_cobr, "", str(data_dep.date()))
         criar_mini_db()
@@ -765,7 +765,7 @@ class Callbacks():
                                         chq_rec,  # Data de recebimento de cheque
                                         chq_depos,  #Data prevista de depósito
                                         ))
-                                                
+
 
     def pag_recebido(self, *event):
         """
@@ -1473,7 +1473,7 @@ class Callbacks():
 
         if obs != "":
             self.oop.dfl_obs = ttk.Label(self.oop.detalheframe, text="Observações: {}".format(obs))
-            self.oop.dfl_obs.grid(column=0, row=4, columnspan=3, sticky='w')
+            self.oop.dfl_obs.grid(column=0, row=5, columnspan=3, sticky='w', pady="18 10")
 
         str_valor_cobr = "Remessa sem cobrança" if valor_cobr == "0" else "Cobrança: {:,.2f}€".format(float(valor_cobr))
         self.oop.dfl_cobr = ttk.Label(self.oop.detalheframe, text=str_valor_cobr)
@@ -1484,11 +1484,13 @@ class Callbacks():
         self.oop.dfl_arquivo = ttk.Label(self.oop.detalheframe, text="Remessa arquivada: {}".format(str_arquivado))
 
         self.oop.dfl_cobr.grid(column=1, row=1, sticky='w')
-        self.oop.dfl_rma.grid(column=1, row=2, sticky='w')
-        self.oop.dfl_arquivo.grid(column=1, row=3, sticky='w')
+
+        self.oop.dfl_rma.grid(column=2, row=1, sticky='w')
+        self.oop.dfl_arquivo.grid(column=2, row=2, sticky='w')
 
 
-        ttk.Label(self.oop.detalheframe, text="Expedidor: {}".format(expedidor)).grid(column=0, row=6, sticky='w')
+        ttk.Label(self.oop.detalheframe, text="Expedidor: {}".format(expedidor)) \
+            .grid(column=0, row=4, sticky='w', pady="3 0")
 
         if valor_cobr !="0":
             str_chq_recebido = "Não" if chq_recebido == "N/D" else chq_recebido
@@ -1496,9 +1498,9 @@ class Callbacks():
             self.oop.dfl_data_depositar = ttk.Label(self.oop.detalheframe, text="Depósito previsto:  {}".format(data_depositar))
             str_data_depositado = "Não" if data_depositado == 0 else data_depositado
             self.oop.dfl_data_depositado = ttk.Label(self.oop.detalheframe, text="Depósito efetuado: {}".format(str_data_depositado))
-            self.oop.dfl_chq_rec.grid(column=2, row=1, sticky='w')
-            self.oop.dfl_data_depositar.grid(column=2, row=2, sticky='w')
-            self.oop.dfl_data_depositado.grid(column=2, row=3, sticky='w')
+            self.oop.dfl_chq_rec.grid(column=1, row=2, sticky='w')
+            self.oop.dfl_data_depositar.grid(column=1, row=3, sticky='w')
+            self.oop.dfl_data_depositado.grid(column=1, row=4, sticky='w', pady="3 0")
 
 
         if use_terminaltables:
@@ -1527,7 +1529,6 @@ class Callbacks():
             self.oop.tree_detalhe.column('Local', minwidth=100, stretch=1, width=130)
             self.oop.tree_detalhe.column('Recetor', minwidth=60, stretch=1, width=60)
 
-            #  Ordenar por coluna ao clicar no respetivo cabeçalho
             for col in self.oop.tree_detalhe['columns']:
                 self.oop.tree_detalhe.heading(col, text=col.title())
 
@@ -1544,7 +1545,7 @@ class Callbacks():
                                   foreground="grey22")
             ttk.Style().configure( '.', relief = 'flat', borderwidth = 0) # Aplicar visual limpo a todas as classes
 
-            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady="20 0")
+            self.oop.tree_detalhe.grid(column=0, columnspan=7, row=8, sticky='wne', pady="15 0")
 
             tag="etc"
             for l in estado_detalhado:

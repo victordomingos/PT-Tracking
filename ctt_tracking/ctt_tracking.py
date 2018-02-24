@@ -265,7 +265,7 @@ class Janela:
             self.bottomframe.columnconfigure(col, weight=1)
 
         # Painel de detalhes de remessa (aparece somente quando o utilizador solicita) ----------------------------
-        self.detalheframe = ttk.Frame(root, padding="5 8 5 5")
+        self.detalheframe = ttk.Frame(root, padding="5 8 5 0")
 
         # Painel de informação (entre a tabela e o formulário de entrada de dados) ------------------------------------
         self.statusframe = ttk.Frame(root, padding="5 5 5 5")

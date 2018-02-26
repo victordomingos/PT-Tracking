@@ -51,7 +51,7 @@ class Janela:
         self.master.createcommand('exit', save_and_exit)
         master.title(__app_name__+ " - "+ __version__)
         master.minsize(width=800, height=600)
-        #master.maxsize(width=1024, height=2000)
+        master.maxsize(width=2024, height=2000)
 
         self.callBacks = Callbacks(self)  # Vai buscar ao módulo externo os métodos que pertenciam a esta classe.
 
@@ -287,32 +287,17 @@ class Janela:
 
 
 if __name__ == "__main__":
-    sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
     logging.basicConfig(filename=DEBUG_PATH,
                         filemode='a',
                         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                         datefmt='%H:%M:%S',
                         level=logging.DEBUG)
-
     user_info = basicLogInfo()
     logging.debug(user_info.generate_log_string())
-
-    print("\nBem-vindo(a) ao {} ({})!\n".format(__app_name__, __version__))
-    print(__copyright__)
-    print(__license__)
-    print("\n\n - A inicializar base de dados principal.")
     db_inicializar()
-    print(" - A preparar interface gráfica.")
-    print("   * ", end="", flush=True)
     root = Tk()
-    print("* ", end="", flush=True)
     root.configure(background='grey95')
-    print("* ", end="", flush=True)
     root.geometry('860x650+0+0')
-    print("* ", end="", flush=True)
     janela = Janela(root)
-    print("*", end="", flush=True)
     root.bind_all("<Mod2-q>", exit)
-    print("\n\n - Até já! :-)\n\n")
     root.mainloop()

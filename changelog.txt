@@ -4,7 +4,7 @@ Histórico de versões:
 ====================
 
 
-v.2.12 beta - 23/02/2018
+v.2.12 beta - 26/02/2018
  * No painel de detalhes, o estado detalhado (histórico) é agora apresentado
    utilizando uma ttk.Treeview em vez de uma tabela em modo de texto
    (terminaltables). Para manter compatibilidade com os registos antigos na

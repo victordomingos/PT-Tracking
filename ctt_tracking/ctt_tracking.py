@@ -39,7 +39,7 @@ from logging_stuff import *
 __author__ = "Victor Domingos"
 __copyright__ = "Copyright 2018 Victor Domingos"
 __license__ = "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
-__version__ = "v.2.12"
+__version__ = "v.2.13"
 __email__ = "web@victordomingos.com"
 __status__ = "beta"
 
@@ -76,6 +76,8 @@ class Janela:
         self.detalhe_visible = 0
         self.pesquisa_visible = 0
         self.estado_tabela = "Em curso"
+        self.var_spin_vols = StringVar(root)
+        self.var_spin_vols.set("1")
 
         style_label = ttk.Style()
         style_label.configure("BW.TLabel", pady=10, foreground="grey25", font=("Helvetica Neue", 16, "bold"))
@@ -227,11 +229,11 @@ class Janela:
         self.dicas.bind(self.text_input_dias, 'Indique o número de dias para pagamento\n(p. ex.: "PP", "30", "15").')
 
         ttk.Label(self.bottomframe, text="Vols.").grid(column=5, row=1, sticky=W+E)
-        self.spin_vols = Spinbox(self.bottomframe, from_=1, to=100, format='%.0f', width=6)
+        self.spin_vols = ttk.Spinbox(self.bottomframe, from_=1, to=100, format='%.0f', width=6, textvariable=self.var_spin_vols)
         self.spin_vols.grid(column=5, row=2, sticky=W+E)
         self.spin_vols.bind("<Return>", self.callBacks.add_remessa)
+        self.spin_vols.selection_clear()
         self.dicas.bind(self.spin_vols, 'Especifique o número de volumes\nque compõem esta remessa.')
-
 
         ttk.Label(self.bottomframe, text="Expedidor").grid(column=0, row=3, sticky=W+E)
         self.combo_expedidor = ttk.Combobox(self.bottomframe, width=13, values=(" - Selecionar -",)+EXPEDIDORES, state="readonly")

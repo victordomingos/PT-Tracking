@@ -747,6 +747,8 @@ class Callbacks():
         c.close()
         self.oop.lista_destinatarios = db_get_destinatarios()
         estado = db_update_estado(add_obj)
+        if not estado:
+            return False
         self.inserir_linha("0", add_destin, estado, add_obj, add_vols, add_cobr, "", str(data_dep.date()))
         criar_mini_db()
         remessa = "({}, {})".format(add_obj, add_destin)
@@ -1448,7 +1450,7 @@ class Callbacks():
         #dt_data_ult_verif = datetime.strptime(detalhes[14], "%Y-%m-%d %H:%M:%S.%f")
         #data_ult_verif = datetime.strftime(dt_data_ult_verif,"%Y-%m-%d")
 
-        if estado == "Objeto não encontrado":
+        if estado == "Objeto não encontrado" or estado == "Informação indisponível":
             use_terminaltables = True
             estado_detalhado =  estado
         else:

@@ -205,7 +205,10 @@ def db_update_estado(remessa):
     """
     estado = verificar_estado(remessa)
     if estado not in ("- N/A -", "Objeto não encontrado"):
-        estado_detalhado = json.dumps(obter_estado_detalhado2(remessa))
+        try:
+            estado_detalhado = json.dumps(obter_estado_detalhado2(remessa))
+        except:
+            return []
         agora = datetime.now()
         try:
             conn = sqlite3.connect(DB_PATH)
@@ -309,20 +312,19 @@ def obter_estado_detalhado2(remessa: str) -> List[str]:
     tracking_code = remessa
     ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
     estado = "- N/A -"
-    data = []
+
     try:
         html = requests.get(ctt_url).content
         soup = BeautifulSoup(html, "html5lib")
         rows = soup.select("table #details_0 td table")[0]
-        # cols = [th.text.strip() for th in rows.select("thead tr th")]
         tabela = [[td.text.strip() for td in tr.select("td")]
                 for tr in rows.select("tr")]
-        # tabela.insert(0, cols)  # Cabeçalho com o nome das colunas da tabela
         tabela = [linha for linha in tabela if linha != []]  # Remover todas as linhas em branco
     except Exception as erro:
         logging.debug("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a "
                       "partir da web.".format(estado))
         logging.debug(str(erro))
+        return []
     return tabela
 
 

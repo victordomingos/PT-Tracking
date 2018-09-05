@@ -698,7 +698,7 @@ class Callbacks():
                 self.oop.text_input_cobr.focus_set()
                 return
 
-        if (float(add_cobr) == 0):
+        if float(add_cobr) == 0:
             num_dias = 0
         else:
             if add_dias == "":
@@ -746,10 +746,13 @@ class Callbacks():
         conn.commit()
         c.close()
         self.oop.lista_destinatarios = db_get_destinatarios()
-        estado = db_update_estado(add_obj)
+
+        estado = db_update_estado(add_obj.strip())
         if not estado:
-            return False
-        self.inserir_linha("0", add_destin, estado, add_obj, add_vols, add_cobr, "", str(data_dep.date()))
+            estado = "Informação indisponível"
+
+        data_dep_txt = str(data_dep.date()) if float(add_cobr) else ""
+        self.inserir_linha("0", add_destin, estado, add_obj, add_vols, add_cobr, "", data_dep_txt)
         criar_mini_db()
         remessa = "({}, {})".format(add_obj, add_destin)
         self.oop.status_txt.set("Nova remessa adicionada! {}".format(remessa))

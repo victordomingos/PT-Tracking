@@ -286,26 +286,26 @@ def encurtar_destino(destino):
     return destino
     
         
-def verificar_estado(tracking_code):
+def verificar_estado(tracking_code: str) -> str:
     """ Verificar estado de objeto nos CTT
     Ex: verificar_estado("EA746000000PT")
     """
-    ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
+    ctt_url = "https://www.ctt.pt/feapl_2/app/open/objectSearch/objectSearch.jspx"
     estado = "- N/A -"
     try:
-        html = requests.get(ctt_url, timeout=(5,30)).content
-        soup = BeautifulSoup(html, "html.parser")
-        table = soup.find('table')
-        cells = table('td')
-        estado = cells[4].renderContents()
+        response = requests.post(ctt_url, data={'objects': tracking_code}).content
+        sopa = BeautifulSoup(response, "html.parser")
+        tabela = sopa.find(id='objectSearchResult').find('table')
+        celulas = tabela('td')
+        estado = celulas[4].renderContents()
         estado = clean(estado, tags=[], strip=True).strip()
         if estado == "":  # se valor do ult. estado estiver vazio, usar as celulas da tabela seguinte para ler estado
-            estado = cells[9].renderContents()
+            estado = celulas[9].renderContents()
             estado = clean(estado, tags=[], strip=True).strip()
-    except Exception as erro:
-        print(erro)
-        #print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
-    return(estado)
+    except Exception as e:
+        print(e)
+        print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
+    return estado
 
 
 def calcular_dias_desde_envio(data_expedicao1):

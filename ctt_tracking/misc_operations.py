@@ -64,7 +64,7 @@ def db_inicializar():
 def criar_mini_db():
     try:
         os.remove(MINI_DB_PATH) # Apagar ficheiro antigo.
-    except OSError as excepcao: 
+    except OSError as excepcao:
         if excepcao.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
 
@@ -88,11 +88,11 @@ def criar_mini_db():
     conn_mini.commit()
     c_mini.close()
 
-    
+
     try:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-                
+
         c.execute("""SELECT destin,
                             estado,
                             obj_num,
@@ -103,7 +103,7 @@ def criar_mini_db():
                             vols,
                             data_ult_verif
                      FROM remessas
-                     WHERE arquivado = 0;""") 
+                     WHERE arquivado = 0;""")
 
         for row in c:  # Preencher cada linha da tabela com os valores obtidos da base de dados
             destin = row[0]
@@ -138,11 +138,11 @@ def criar_mini_db():
 
         conn.commit()
         c.close()
-            
+
     except Exception as erro:
         print("criar_mini_db():", erro)
 
-    
+
     print('Creating archive...')
     try:
         import zlib
@@ -159,13 +159,13 @@ def criar_mini_db():
     finally:
         print('closing')
         zf.close()
-        
+
     try:
         os.remove(MINI_DB_PATH) # Apagar ficheiro.
-    except OSError as excepcao: 
+    except OSError as excepcao:
         if excepcao.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
- 
+
 
 
 # Adicionar uma nova coluna à base de dados (p/ expansão de funcionalidade)
@@ -215,7 +215,7 @@ def db_update_estado(remessa):
             c = conn.cursor()
             c.execute("""UPDATE remessas 
                          SET estado = ?, estado_detalhado = ?, data_ult_verif = ? 
-                         WHERE obj_num = ?;""", 
+                         WHERE obj_num = ?;""",
                          (estado, estado_detalhado, agora, remessa))
             conn.commit()
             c.close()
@@ -236,7 +236,7 @@ def db_del_remessa(remessa):
         c = conn.cursor()
         c.execute("""UPDATE remessas 
                      SET arquivado = ?, data_ult_alt = ? 
-                     WHERE obj_num = ?;""", 
+                     WHERE obj_num = ?;""",
                      (1, agora, remessa))
         conn.commit()
         c.close()
@@ -255,7 +255,7 @@ def db_restaurar_remessa(remessa):
         c = conn.cursor()
         c.execute("""UPDATE remessas 
                      SET arquivado = ?, data_ult_alt = ? 
-                     WHERE obj_num = ?;""", 
+                     WHERE obj_num = ?;""",
                      (0, agora, remessa))
         conn.commit()
         c.close()
@@ -284,23 +284,24 @@ def db_atualizar_tudo():
     c.close()
 
 
-def verificar_estado(tracking_code):
+def verificar_estado(tracking_code: str) -> str:
     """ Verificar estado de objeto nos CTT
     Ex: verificar_estado("EA746000000PT")
     """
-    ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
+    ctt_url = "https://www.ctt.pt/feapl_2/app/open/objectSearch/objectSearch.jspx"
     estado = "- N/A -"
     try:
-        html = requests.get(ctt_url).content
-        soup = BeautifulSoup(html, "html.parser")
-        table = soup.find('table')
-        cells = table('td')
-        estado = cells[4].renderContents()
+        response = requests.post(ctt_url, data={'objects': tracking_code}).content
+        sopa = BeautifulSoup(response, "html.parser")
+        tabela = sopa.find(id='objectSearchResult').find('table')
+        celulas = tabela('td')
+        estado = celulas[4].renderContents()
         estado = clean(estado, tags=[], strip=True).strip()
         if estado == "":  # se valor do ult. estado estiver vazio, usar as celulas da tabela seguinte para ler estado
-            estado = cells[9].renderContents()
+            estado = celulas[9].renderContents()
             estado = clean(estado, tags=[], strip=True).strip()
-    except:
+    except Exception as e:
+        print(e)
         print("verificar_estado({}) - Não foi possível obter estado atualizado a partir da web.".format(estado))
     return estado
 
@@ -310,22 +311,37 @@ def obter_estado_detalhado2(remessa: str) -> List[str]:
     Ex: obter_estado_detalhado("EA746000000PT")
     """
     tracking_code = remessa
-    ctt_url = "http://www.cttexpresso.pt/feapl_2/app/open/cttexpresso/objectSearch/objectSearch.jspx?lang=def&objects=" + tracking_code + "&showResults=true"
+    ctt_url = "https://www.ctt.pt/feapl_2/app/open/objectSearch/objectSearch.jspx"
     estado = "- N/A -"
 
     try:
-        html = requests.get(ctt_url).content
-        soup = BeautifulSoup(html, "html5lib")
-        rows = soup.select("table #details_0 td table")[0]
-        tabela = [[td.text.strip() for td in tr.select("td")]
-                for tr in rows.select("tr")]
-        tabela = [linha for linha in tabela if linha != []]  # Remover todas as linhas em branco
-    except Exception as erro:
-        logging.debug("obter_estado_detalhado2({}) - Não foi possível obter estado detalhado a "
-                      "partir da web.".format(estado))
-        logging.debug(str(erro))
-        return []
-    return tabela
+        response = requests.post(ctt_url, data={'objects': tracking_code}).content
+        sopa = BeautifulSoup(response, "html.parser")
+        tabela_html = sopa.select("table #details_0 td table")[0]
+        tabela_detalhes = []
+
+        for tr in tabela_html.select("tr"):
+            linha = [td.text.strip() for td in tr.select('td')]
+
+            if len(linha) == 6:
+                linha = linha[1:]
+
+            if len(linha) == 1:
+                dia = linha[0].split(',')[0]
+                data = linha[0].split(',')[1]
+                linha = [ dia, data, '', '', '']
+                tabela_detalhes.insert(-1, linha)
+            elif len(linha) == 5:
+                tabela_detalhes.append(linha)
+
+        estado_detalhado = [linha for linha in tabela_detalhes if linha != []]  # Remover todas as linhas em branco
+    except Exception as e:
+        print(e)
+        print("obter_estado_detalhado2({}) - Não foi possível obter estado " \
+              "detalhado a partir da web.".format(tabela_detalhes))
+        estado_detalhado = []
+
+    return estado_detalhado
 
 
 def txt_wrap(texto, chars):
@@ -378,7 +394,10 @@ def calcular_data_deposito(data_expedicao2, dias1):
 
 def comeca_por_dia_da_semana(texto: str) -> bool:
     dias_da_semana = ("segunda-feira", "terça-feira", "quarta-feira",
-                      "quinta-feira", "sexta-feira", "sábado", "domingo")
+                      "quinta-feira", "sexta-feira", "sábado", "domingo",
+                      "monday", "tuesday", "wednesday",
+                      "thursday", "friday", "saturday", "sunday",
+                      )
 
     if texto.lower().split(", ")[0] in dias_da_semana:
         return True
